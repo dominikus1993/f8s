@@ -10,4 +10,8 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\f8s\f8s.fsproj" />
+  </ItemGroup>
+
 </Project>
