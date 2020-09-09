@@ -1,5 +1,6 @@
 ﻿namespace FsharpNetes
-open Kub
+open k8s.Models
 module Pod =
-    let createSimple name: string = 
+    let createSimple(name: string) = 
+        V1Pod()
 
