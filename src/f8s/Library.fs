@@ -1,5 +1,5 @@
-﻿namespace f8s
+﻿namespace FsharpNetes
+open Kub
+module Pod =
+    let createSimple name: string = 
 
-module Say =
-    let hello name =
-        printfn "Hello %s" name
