@@ -1,25 +1,14 @@
-namespace FSharpNetes 
+﻿namespace FSharpNetes 
 open System
 
 [<AutoOpen>]
-module Container = 
+module Pod = 
     open k8s
     open k8s.Models
-    
-    type ImagePullPolicy =
-        | Always
-        | IfNotPresent
-        | Never
-    with
-        member this.ToKubeValue() =
-            match this with
-            | Always -> "Always"
-            | IfNotPresent -> "IfNotPresent"
-            | Never -> "Never"
 
-    type ContainerState = { Name: string option; ImageName: string option; ImagePullPolicy: ImagePullPolicy }
+    type PodState = { Name: string option; ImageName: string option; ImagePullPolicy: ImagePullPolicy }
 
-    type ContainerBuilder internal () =
+    type PodBuilder internal () =
         member this.Yield(_) =
             { Name = None; ImageName = None; ImagePullPolicy = ImagePullPolicy.Always }
         
@@ -41,5 +30,5 @@ module Container =
         member this.ImagePullPolicy (state: ContainerState, policy: ImagePullPolicy) =
             { state with ImagePullPolicy = policy }
 
-    let container = ContainerBuilder()
+    let pod = PodBuilder()
 
