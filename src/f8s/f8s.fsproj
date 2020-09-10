@@ -4,6 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Serialization.fs" />
+    <Compile Include="Enviroment.fs" />
     <Compile Include="Container.fs" />
     <Compile Include="Library.fs" />
   </ItemGroup>
