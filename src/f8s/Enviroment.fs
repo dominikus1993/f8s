@@ -1,8 +1,7 @@
 ﻿namespace FSharpNetes
 
+open System
+
 [<AutoOpen>]
-module Env =
-    type EnviromentVar =
-        | KeyValue of name: string * value: string
-        
-    type EnvState = {  }
+module Environment =
+    let a = 2

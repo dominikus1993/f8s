@@ -5,6 +5,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Serialization.fs" />
+    <Compile Include="Image.fs" />
+    <Compile Include="MetaData.fs" />
+    <Compile Include="Namespace.fs" />
     <Compile Include="Enviroment.fs" />
     <Compile Include="Container.fs" />
     <Compile Include="Library.fs" />
