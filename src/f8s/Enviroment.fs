@@ -5,6 +5,8 @@ open k8s.Models
 module Environment =
     type EnvironmentVariable =
         | NameValue of name: string * value: string
+        | ConfigMap of name: string
+        | Secret of name: string
     type EnvironmentState = { Variables: EnvironmentVariable list }
     
     type EnvironmentBuilder internal () =
@@ -16,8 +18,7 @@ module Environment =
             
 
         [<CustomOperation("add_var")>]
-        member this.Name (state: EnvironmentState, variable: EnvironmentVariable) =
+        member this.AddVar (state: EnvironmentState, variable: EnvironmentVariable) =
             { state with Variables = variable :: state.Variables }    
-    
     
     let env = EnvironmentBuilder()

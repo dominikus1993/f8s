@@ -2,6 +2,7 @@ namespace FSharpNetes
 
 open System
 open System.Linq
+open FSharpNetes.Utils
 
 [<AutoOpen>]
 module Container =
@@ -48,8 +49,22 @@ module Container =
                     match env with
                     | Choice1Of2 (e) -> e)
                 |> List.toSeq
-
-            V1Container(name = name, imagePullPolicy = pp, image = imageName, env = envs.ToList())
+                |> toList
+            
+ 
+            let envsFrom =
+                state.Env
+                |> List.filter (fun e ->
+                    match e with
+                    | Choice2Of2 (_) -> true
+                    | _ -> false)
+                |> List.map (fun env ->
+                    match env with
+                    | Choice2Of2 (e) -> e)
+                |> List.toSeq           
+                |> toList
+                
+            V1Container(name = name, imagePullPolicy = pp, image = imageName, env = envs, envFrom = envsFrom)
 
         [<CustomOperation("name")>]
         member this.Name(state: ContainerState, name: string) = { state with Name = Some(name) }

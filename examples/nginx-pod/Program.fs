@@ -13,8 +13,8 @@ let main argv =
     let enviroment = env {
         add_var (NameValue("Test", "22312"))
         add_var (NameValue("Test2", "22312"))
-        add_var (NameValue("Test3", "22312"))
-        add_var (NameValue("Test4", "22312"))
+        add_var (Secret("Test3"))
+        add_var (ConfigMap("Test4"))
     }
     
     let container = container {
