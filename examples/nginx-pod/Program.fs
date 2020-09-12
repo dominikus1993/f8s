@@ -1,7 +1,4 @@
-﻿// Learn more about F# at http://fsharp.org
-open FSharpNetes
-open FsharpNetes
-
+﻿open FsharpNetes
 
 [<EntryPoint>]
 let main argv =

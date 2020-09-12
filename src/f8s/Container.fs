@@ -28,7 +28,7 @@ module Container =
         member this.Yield(_) =
             { Name = None
               Image = None
-              ImagePullPolicy = ImagePullPolicy.Always
+              ImagePullPolicy = Always
               Env = [] }
 
         member this.Run(state: ContainerState) =
