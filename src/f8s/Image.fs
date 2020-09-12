@@ -1,1 +1,1 @@
-﻿namespace FsharpNetes
+﻿namespace FSharpNetes

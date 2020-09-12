@@ -1,4 +1,4 @@
-﻿namespace FsharpNetes
+﻿namespace FSharpNetes
 
 type Api =
     V1

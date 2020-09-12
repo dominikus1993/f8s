@@ -1,4 +1,4 @@
-﻿namespace FsharpNetes
+﻿namespace FSharpNetes
 
 open k8s.Models
 

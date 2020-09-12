@@ -1,4 +1,4 @@
-﻿open FsharpNetes
+﻿open FSharpNetes
 
 [<EntryPoint>]
 let main argv =
@@ -19,7 +19,7 @@ let main argv =
     
     let container = container {
         name "nginx"
-        image_name "nginx:latest"
+        image "nginx:latest"
         image_pull_policy Always
         env enviroment
     }

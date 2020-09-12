@@ -1,7 +1,4 @@
 ﻿namespace FSharpNetes
-
-open System
-open FSharpNetes
 open k8s.Models
 
 [<AutoOpen>]
@@ -15,7 +12,7 @@ module Environment =
             { Variables = []; }
         
         member this.Run(state: EnvironmentState) = 
-            state.Variables |> List.map(fun e -> match e with | NameValue(name, value) -> Choice1Of2(new V1EnvVar(name, value)))
+            state.Variables |> List.map(fun e -> match e with | NameValue(name, value) -> Choice1Of2(V1EnvVar(name, value)))
             
 
         [<CustomOperation("add_var")>]
