@@ -9,9 +9,11 @@ with
         | Latest -> "latest"
         | SemVer(v) -> v
     
-type Image = { Name: string; Version: Version }
+type Image = Image of name: string * version : Version
     
 module Image =
-    let create(name: string, version: Version) = { Name = name; Version = version }
+    let create(name: string, version: Version) = Image(name, version)
     
-    let imageName (image: Image) = sprintf "%s:%s" image.Name (image.Version.GetVersion())
+    let imageName (image: Image) =
+        let (Image(name, ver)) = image
+        sprintf "%s:%s" name (ver.GetVersion())

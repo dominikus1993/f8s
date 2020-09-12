@@ -19,7 +19,7 @@ let main argv =
     
     let container = container {
         name "nginx"
-        image ({ Name = "nginx"; Version = Latest })
+        image (Image("nginx", Latest))
         image_pull_policy Always
         env enviroment
     }
