@@ -21,7 +21,7 @@ module Container =
 
     type ContainerState =
         { Name: string option
-          Image: string option
+          Image: Image option
           ImagePullPolicy: ImagePullPolicy
           Env: Choice<V1EnvVar, V1EnvFromSource> list }
 
@@ -37,8 +37,9 @@ module Container =
                 defaultArg state.Name (Guid.NewGuid().ToString())
 
             let pp = state.ImagePullPolicy.ToKubeValue()
-            let imageName = defaultArg state.Image null
-
+            let image = match state.Image with | Some(i) -> i | _ -> failwith "No image provided"
+            let imageName = image |> Image.imageName
+   
             let envs =
                 state.Env
                 |> List.filter (fun e ->
@@ -70,7 +71,7 @@ module Container =
         member this.Name(state: ContainerState, name: string) = { state with Name = Some(name) }
 
         [<CustomOperation("image")>]
-        member this.ImageName(state: ContainerState, name: string) = { state with Image = Some(name) }
+        member this.Image(state: ContainerState, image: Image) = { state with Image = Some(image) }
 
         [<CustomOperation("image_pull_policy")>]
         member this.ImagePullPolicy(state: ContainerState, policy: ImagePullPolicy) =
