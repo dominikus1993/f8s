@@ -24,6 +24,11 @@ let main argv =
         env enviroment
     }
     
+    let nginxPod = pod {
+        api V1
+        add_container container
+    }
+    
   
-    printfn "Hello World from F#! %A" (container |> Serialization.toJson)
+    printfn "Hello World from F#! %A" (nginxPod |> Serialization.toJson)
     0 // return an integer exit code
