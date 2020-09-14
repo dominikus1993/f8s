@@ -36,5 +36,5 @@ let main argv =
     }
     
   
-    printfn "Hello World from F#! %A" (nginxPod |> Serialization.toJson)
+    printfn "Hello World from F#! %A" (nginxPod |> Serialization.toYaml)
     0 // return an integer exit code

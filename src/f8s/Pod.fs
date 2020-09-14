@@ -18,7 +18,7 @@ module Pod =
             let api = defaultArg state.Api V1 |> Api.value
             let spec = V1PodSpec(containers = containers)
             let meta = defaultArg state.MetaData null
-            V1Pod(spec = spec, apiVersion = api, metadata = meta)
+            V1Pod(spec = spec, apiVersion = api, metadata = meta, kind = "Pod")
             
         [<CustomOperation("api")>]
         member this.AddApi (state: PodState, api: Api) =
