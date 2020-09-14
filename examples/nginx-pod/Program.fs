@@ -24,8 +24,14 @@ let main argv =
         env enviroment
     }
     
+    let podMeta =  metadata {
+        name "nginx-pod"
+        nmspc "test"
+    }
+    
     let nginxPod = pod {
         api V1
+        metadata podMeta
         add_container container
     }
     
