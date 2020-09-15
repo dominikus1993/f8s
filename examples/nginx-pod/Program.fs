@@ -1,4 +1,6 @@
 ﻿open FSharpNetes
+open k8s
+open k8s.Models
 
 [<EntryPoint>]
 let main argv =
@@ -34,7 +36,9 @@ let main argv =
         metadata podMeta
         add_container container
     }
-    
-  
+    let config = KubernetesClientConfiguration.BuildConfigFromConfigFile()
+    let k8s = new Kubernetes(config)
+    let createT = create(k8s)(nginxPod)
+    createT.Wait()
     printfn "Hello World from F#! %A" (nginxPod |> Serialization.toYaml)
     0 // return an integer exit code
