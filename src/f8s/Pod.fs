@@ -35,5 +35,6 @@ module Pod =
 
     let pod = PodBuilder()
 
-    let create (client: Kubernetes)(pod: V1Pod) = 
-        client.CreateNamespacedPodAsync(pod, pod.Namespace())
+    let create (client: Kubernetes)(pod: V1Pod) =
+        client.CreateNamespacedPodAsync(pod, pod.Namespace()) |> Async.AwaitTask |> Async.Ignore
+        

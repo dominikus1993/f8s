@@ -15,8 +15,6 @@ let main argv =
     let enviroment = env {
         add_var (NameValue("Test", "22312"))
         add_var (NameValue("Test2", "22312"))
-        add_var (Secret("Test3"))
-        add_var (ConfigMap("Test4"))
     }
     
     let container = container {
@@ -38,7 +36,6 @@ let main argv =
     }
     let config = KubernetesClientConfiguration.BuildConfigFromConfigFile()
     let k8s = new Kubernetes(config)
-    let createT = create(k8s)(nginxPod)
-    createT.Wait()
+    create(k8s)(nginxPod) |> Async.RunSynchronously
     printfn "Hello World from F#! %A" (nginxPod |> Serialization.toYaml)
     0 // return an integer exit code

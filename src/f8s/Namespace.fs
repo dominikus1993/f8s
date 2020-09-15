@@ -1,6 +1,7 @@
 ﻿namespace FSharpNetes
 
 open k8s.Models
+open k8s
 
 [<AutoOpen>]
 module Namespace =
@@ -20,3 +21,10 @@ module Namespace =
             
     
     let nmspc = NamespaceBuilder()
+
+    let create (client: Kubernetes)(pod: V1Namespace) =
+        async {
+            let nmspc = client.CreateNamespace(pod)
+            return nmspc
+        }
+        
