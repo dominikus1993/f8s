@@ -13,6 +13,7 @@
     <Compile Include="Enviroment.fs" />
     <Compile Include="Container.fs" />
     <Compile Include="Pod.fs" />
+    <Compile Include="ReplicaSet.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
