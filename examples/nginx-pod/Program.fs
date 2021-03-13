@@ -34,7 +34,7 @@ let main argv =
         metadata podMeta
         add_container container
     }
-    let config = KubernetesClientConfiguration.BuildConfigFromConfigFile()
-    let k8s = new Kubernetes(config)
-    printfn "Hello World from F#! %A" (nginxPod |> Serialization.toYaml)
+
+    let yaml = nginxPod |> Serialization.toYaml
+    printfn $"{yaml}"
     0 // return an integer exit code

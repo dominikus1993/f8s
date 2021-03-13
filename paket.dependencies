@@ -6,3 +6,10 @@ framework: net5.0
 nuget FSharp.Core
 nuget KubernetesClient
 nuget FSharp.SystemTextJson
+
+
+nuget Microsoft.NET.Test.Sdk
+nuget xunit
+nuget xunit.runner.visualstudio
+nuget coverlet.collector
+nuget FsUnit.xUnit
