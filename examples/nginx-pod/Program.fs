@@ -36,7 +36,5 @@ let main argv =
     }
     let config = KubernetesClientConfiguration.BuildConfigFromConfigFile()
     let k8s = new Kubernetes(config)
-    let a = Namespace.create k8s nspc |> Async.RunSynchronously
-    Pod.create(k8s)(nginxPod) |> Async.RunSynchronously
     printfn "Hello World from F#! %A" (nginxPod |> Serialization.toYaml)
     0 // return an integer exit code

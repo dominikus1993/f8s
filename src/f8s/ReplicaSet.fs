@@ -1,7 +1,7 @@
 ﻿namespace FSharpNetes
 
-open k8s.Models
 open System
+open k8s.Models
 
 [<AutoOpen>]
 module ReplicaSet =
