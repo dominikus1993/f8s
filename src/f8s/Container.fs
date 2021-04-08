@@ -76,8 +76,8 @@ module Container =
         [<CustomOperation("image_pull_policy")>]
         member this.ImagePullPolicy(state: ContainerState, policy: ImagePullPolicy) =
             { state with ImagePullPolicy = policy }
-
+            
         [<CustomOperation("env")>]
-        member this.Env(state: ContainerState, env: Choice<V1EnvVar, V1EnvFromSource> list) = { state with Env = env }
+        member this.EnvVar(state: ContainerState, env: EnvironmentVariable list) = { state with Env = env |> List.map(fun e -> Environment.mapConfig(e))}
 
     let container = ContainerBuilder()

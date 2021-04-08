@@ -12,27 +12,18 @@ let main argv =
         metadata meta
     }
     
-    let enviroment = env {
-        add_var (NameValue("Test", "22312"))
-        add_var (NameValue("Test2", "22312"))
-    }
-    
-    let container = container {
+    let ngix = container {
         name "nginx"
         image (Image("nginx", Latest))
         image_pull_policy Always
-        env enviroment
+        env [NameValue("Test", "22312"); NameValue("Test2", "22312")]
     }
     
-    let podMeta =  metadata {
-        name "nginx-pod"
-        nmspc "test"
-    }
     
     let nginxPod = pod {
         api V1
-        metadata podMeta
-        add_container container
+        metadata meta
+        container ngix
     }
 
     let yaml = nginxPod |> Serialization.toYaml

@@ -7,9 +7,10 @@ module Environment =
         | NameValue of name: string * value: string
         | ConfigMap of name: string
         | Secret of name: string
+    type EnvironmentVariables = EnvironmentVariable list
     type EnvironmentState = { Variables: EnvironmentVariable list }
 
-    let private mapConfig (env: EnvironmentVariable) =
+    let internal mapConfig (env: EnvironmentVariable) =
         match env with
         | NameValue(name, value) -> Choice1Of2(V1EnvVar(name, value))
         | ConfigMap(name) -> Choice2Of2(V1EnvFromSource(configMapRef = V1ConfigMapEnvSource(name)))
@@ -26,5 +27,7 @@ module Environment =
         [<CustomOperation("add_var")>]
         member this.AddVar (state: EnvironmentState, variable: EnvironmentVariable) =
             { state with Variables = variable :: state.Variables }    
-    
+        [<CustomOperation("add_vars")>]
+        member this.AddVars (state: EnvironmentState, variables: EnvironmentVariable list) =
+            { state with Variables = variables @ state.Variables }  
     let env = EnvironmentBuilder()

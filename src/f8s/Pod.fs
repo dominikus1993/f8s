@@ -29,7 +29,7 @@ module Pod =
             let metaOpt = meta |> Option.ofObj
             { state with MetaData = metaOpt}              
                 
-        [<CustomOperation("add_container")>]
+        [<CustomOperation("container")>]
         member this.AddContainer (state: PodState, container: V1Container) =
             { state with Containers = container :: state.Containers }                   
 
