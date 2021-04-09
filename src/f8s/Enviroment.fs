@@ -28,6 +28,6 @@ module Environment =
         member this.AddVar (state: EnvironmentState, variable: EnvironmentVariable) =
             { state with Variables = variable :: state.Variables }    
         [<CustomOperation("add_vars")>]
-        member this.AddVars (state: EnvironmentState, variables: EnvironmentVariable list) =
+        member this.AddVars (state: EnvironmentState, variables: EnvironmentVariables) =
             { state with Variables = variables @ state.Variables }  
     let env = EnvironmentBuilder()
