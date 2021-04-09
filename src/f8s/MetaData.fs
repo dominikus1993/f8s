@@ -13,7 +13,7 @@ module MetaData =
         
         member this.Run(state: MetaDataState) = 
             let name = defaultArg state.Name null
-            let nmspc = defaultArg state.Namespace null
+            let nmspc = defaultArg state.Namespace "default"
             V1ObjectMeta(name = name, namespaceProperty = nmspc, labels = state.Labels)
 
         [<CustomOperation("name")>]
