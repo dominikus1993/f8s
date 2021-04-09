@@ -15,6 +15,7 @@
     <Compile Include="Pod.fs" />
     <Compile Include="ReplicaSet.fs" />
     <Compile Include="Deployment.fs" />
+    <Compile Include="CronJob.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

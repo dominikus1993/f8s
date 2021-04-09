@@ -6,6 +6,7 @@ open k8s.Models
 let main argv =
     let meta = metadata {
         name "test"
+        label (Label("test", "test"))
     }
     
     let nspc = nmspc {
