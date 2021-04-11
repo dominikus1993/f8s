@@ -2,15 +2,14 @@ namespace FSharpNetes
 
 open k8s.Models
 open k8s
-
+open System
 [<AutoOpen>]
 module CronJob =
-    type CronJobSchedule = | CronJobSchedule of string
-    type CronJobState = { MetaData: V1ObjectMeta option; Schedule: CronJobSchedule option }
+    type CronJobState = { MetaData: V1ObjectMeta option; Schedule: string option }
     
     let private getCronJobSchedule schedule =
         match schedule with
-        | Some (CronJobSchedule(cron)) -> cron
+        | Some (cron) -> cron
         | _ -> failwith "No cron schedule provided"        
     
     type CronJobBuilder internal () =
@@ -28,8 +27,12 @@ module CronJob =
         [<CustomOperation("metadata")>]
         member this.Name (state: CronJobState, meta: V1ObjectMeta) =
             { state with MetaData = Some(meta) }
+
+        [<CustomOperation("schedule")>]
+        member this.Schedule (state: CronJobState, schedule: string) =
+            { state with Schedule = schedule |> Option.ofObj |> Option.filter(fun x -> String.IsNullOrEmpty(x) |> not) }
             
     
-    let nmspc = CronJobBuilder()
+    let cronJob = CronJobBuilder()
 
         

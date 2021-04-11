@@ -9,11 +9,15 @@ open k8s.Models
 let main argv =
     let meta = metadata {
         name "test"
+        nmspc "test"
         label (Label("test", "test"))
     }
-    
-    let nspc = nmspc {
-        metadata meta
-    }
-    
+   
+    let cron =
+        cronJob {
+            metadata meta
+            schedule "40 * * * *"
+        }
+    let yaml = cron |> Serialization.toYaml
+    printfn $"{yaml}"    
     0 // return an integer exit code
