@@ -22,7 +22,7 @@ module CronJob =
             let jobSpec = V1JobSpec()
             let jobTemplate = V1beta1JobTemplateSpec(spec = jobSpec)
             let spec = V1beta1CronJobSpec(jobTemplate, schedule)
-            V1beta1CronJob(metadata = meta, spec = spec)
+            V1beta1CronJob(metadata = meta, spec = spec, apiVersion = "batch/v1beta1")
 
         [<CustomOperation("metadata")>]
         member this.Name (state: CronJobState, meta: V1ObjectMeta) =

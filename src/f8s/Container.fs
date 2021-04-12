@@ -13,7 +13,7 @@ module Container =
         | Always
         | IfNotPresent
         | Never
-        member this.ToKubeValue() =
+        member internal this.ToKubeValue() =
             match this with
             | Always -> "Always"
             | IfNotPresent -> "IfNotPresent"
@@ -36,7 +36,7 @@ module Container =
             let name =
                 defaultArg state.Name (Guid.NewGuid().ToString())
 
-            let pp = state.ImagePullPolicy.ToKubeValue()
+            let ipp = state.ImagePullPolicy.ToKubeValue()
 
             let image =
                 match state.Image with
@@ -47,34 +47,26 @@ module Container =
 
             let envs =
                 state.Env
-                |> List.filter
+                |> List.choose
                     (fun e ->
                         match e with
-                        | Choice1Of2 (_) -> true
-                        | _ -> false)
-                |> List.map
-                    (fun env ->
-                        match env with
-                        | Choice1Of2 (e) -> e)
+                        | Choice1Of2 (e) -> Some(e)
+                        | _ -> None)
                 |> List.toSeq
                 |> toList
 
 
             let envsFrom =
                 state.Env
-                |> List.filter
+                |> List.choose
                     (fun e ->
                         match e with
-                        | Choice2Of2 (_) -> true
-                        | _ -> false)
-                |> List.map
-                    (fun env ->
-                        match env with
-                        | Choice2Of2 (e) -> e)
+                        | Choice2Of2 (e) -> Some(e)
+                        | _ -> None)
                 |> List.toSeq
                 |> toList
 
-            V1Container(name = name, imagePullPolicy = pp, image = imageName, env = envs, envFrom = envsFrom)
+            V1Container(name = name, imagePullPolicy = ipp, image = imageName, env = envs, envFrom = envsFrom)
 
         [<CustomOperation("name")>]
         member this.Name(state: ContainerState, name: string) =
