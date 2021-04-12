@@ -9,9 +9,8 @@ open k8s.Models
 let main argv =
     let meta =
         metadata {
-            name "test"
-            nmspc "test"
-            label (Label("test", "test"))
+            name "devnews-cli"
+            nmspc "bots"
         }
 
     let devnewsContainer =
@@ -28,6 +27,7 @@ let main argv =
         cronJob {
             metadata meta
             schedule "40 * * * *"
+            container devnewsContainer
         }
 
     let yaml = cron |> Serialization.toYaml

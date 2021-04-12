@@ -19,7 +19,6 @@ let main argv =
     
     
     let nginxPod = pod {
-        api V1
         metadata meta
         container ngix
     }
