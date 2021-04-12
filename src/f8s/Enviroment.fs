@@ -3,10 +3,13 @@ open k8s.Models
 
 [<AutoOpen>]
 module Environment =
+
+    type Secret = Secret of  name: string * key: string 
     type EnvironmentVariable =
         | NameValue of name: string * value: string
         | ConfigMap of name: string
-        | Secret of name: string
+        | SecretRef of name: string * secret: Secret
+        
     type EnvironmentVariables = EnvironmentVariable list
     type EnvironmentState = { Variables: EnvironmentVariable list }
 
@@ -14,7 +17,7 @@ module Environment =
         match env with
         | NameValue(name, value) -> Choice1Of2(V1EnvVar(name, value))
         | ConfigMap(name) -> Choice2Of2(V1EnvFromSource(configMapRef = V1ConfigMapEnvSource(name)))
-        | Secret(name) -> Choice2Of2(V1EnvFromSource(secretRef = V1SecretEnvSource(name)))
+        | SecretRef(envName, Secret(name, key)) -> Choice1Of2(V1EnvVar(envName, valueFrom = V1EnvVarSource(secretKeyRef = V1SecretKeySelector(key, name))))
         
     type EnvironmentBuilder internal () =
         member this.Yield(_) =
