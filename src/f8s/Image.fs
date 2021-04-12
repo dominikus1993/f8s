@@ -16,4 +16,4 @@ module Image =
     
     let imageName (image: Image) =
         let (Image(name, ver)) = image
-        sprintf "%s:%s" name (ver.GetVersion())
+        $"%s{name}:%s{ver.GetVersion()}"

@@ -21,7 +21,7 @@ module Environment =
             { Variables = []; }
         
         member this.Run(state: EnvironmentState) = 
-            state.Variables |> List.map(fun e -> mapConfig(e))
+            state.Variables |> List.map(mapConfig)
             
 
         [<CustomOperation("add_var")>]

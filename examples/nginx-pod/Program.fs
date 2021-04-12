@@ -6,11 +6,8 @@ open k8s.Models
 let main argv =
     let meta = metadata {
         name "test"
+        nmspc "test"
         label (Label("test", "test"))
-    }
-    
-    let nspc = nmspc {
-        metadata meta
     }
     
     let ngix = container {

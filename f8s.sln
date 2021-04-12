@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{D2
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "nginx-pod", "examples\nginx-pod\nginx-pod.fsproj", "{35C2E1FA-A1F4-45E7-891C-F0976B558B60}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "jobs", "examples\jobs\jobs.fsproj", "{8C4D448C-080B-4ABB-8882-F415CEAECA74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,9 +50,22 @@ Global
 		{35C2E1FA-A1F4-45E7-891C-F0976B558B60}.Release|x64.Build.0 = Release|Any CPU
 		{35C2E1FA-A1F4-45E7-891C-F0976B558B60}.Release|x86.ActiveCfg = Release|Any CPU
 		{35C2E1FA-A1F4-45E7-891C-F0976B558B60}.Release|x86.Build.0 = Release|Any CPU
+		{8C4D448C-080B-4ABB-8882-F415CEAECA74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C4D448C-080B-4ABB-8882-F415CEAECA74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C4D448C-080B-4ABB-8882-F415CEAECA74}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8C4D448C-080B-4ABB-8882-F415CEAECA74}.Debug|x64.Build.0 = Debug|Any CPU
+		{8C4D448C-080B-4ABB-8882-F415CEAECA74}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8C4D448C-080B-4ABB-8882-F415CEAECA74}.Debug|x86.Build.0 = Debug|Any CPU
+		{8C4D448C-080B-4ABB-8882-F415CEAECA74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C4D448C-080B-4ABB-8882-F415CEAECA74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C4D448C-080B-4ABB-8882-F415CEAECA74}.Release|x64.ActiveCfg = Release|Any CPU
+		{8C4D448C-080B-4ABB-8882-F415CEAECA74}.Release|x64.Build.0 = Release|Any CPU
+		{8C4D448C-080B-4ABB-8882-F415CEAECA74}.Release|x86.ActiveCfg = Release|Any CPU
+		{8C4D448C-080B-4ABB-8882-F415CEAECA74}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9C4A4858-0A78-4B3F-998D-50F20D583618} = {E0D5EDEB-4B79-46FA-B776-1C98818EFFF0}
 		{35C2E1FA-A1F4-45E7-891C-F0976B558B60} = {D22C9DFA-514C-4B1A-8087-06B8AE544E22}
+		{8C4D448C-080B-4ABB-8882-F415CEAECA74} = {D22C9DFA-514C-4B1A-8087-06B8AE544E22}
 	EndGlobalSection
 EndGlobal
