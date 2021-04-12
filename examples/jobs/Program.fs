@@ -26,7 +26,7 @@ let main argv =
     let cron =
         cronJob {
             metadata meta
-            schedule " 0 10 * * 1"
+            schedule "0 10 * * 1"
             container devnewsContainer
         }
 
