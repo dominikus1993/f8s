@@ -52,7 +52,6 @@ module Container =
                         match e with
                         | Choice1Of2 (e) -> Some(e)
                         | _ -> None)
-                |> List.toSeq
                 |> toList
 
 
@@ -63,7 +62,6 @@ module Container =
                         match e with
                         | Choice2Of2 (e) -> Some(e)
                         | _ -> None)
-                |> List.toSeq
                 |> toList
 
             V1Container(name = name, imagePullPolicy = ipp, image = imageName, env = envs, envFrom = envsFrom)
