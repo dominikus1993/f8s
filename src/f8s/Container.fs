@@ -9,6 +9,7 @@ module Container =
     open k8s
     open k8s.Models
 
+    type Arg = Arg of string
     type ImagePullPolicy =
         | Always
         | IfNotPresent
@@ -23,6 +24,7 @@ module Container =
         { Name: string option
           Image: Image option
           ImagePullPolicy: ImagePullPolicy
+          Args: Arg list option
           Env: Choice<V1EnvVar, V1EnvFromSource> list }
 
     type ContainerBuilder internal () =
@@ -30,7 +32,8 @@ module Container =
             { Name = None
               Image = None
               ImagePullPolicy = Always
-              Env = [] }
+              Env = []
+              Args = None }
 
         member this.Run(state: ContainerState) =
             let name =
@@ -63,6 +66,8 @@ module Container =
                         | Choice2Of2 (e) -> Some(e)
                         | _ -> None)
                 |> toList
+            
+            let args = defaultArg state.Args null
 
             V1Container(name = name, imagePullPolicy = ipp, image = imageName, env = envs, envFrom = envsFrom)
 
