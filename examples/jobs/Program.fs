@@ -21,7 +21,8 @@ let main argv =
             env [ NameValue("MicrosoftTeams__Enabled", "false")
                   SecretRef("ConnectionStrings__Discord", Secret("devnews", "discord"))
                   SecretRef("ConnectionStrings__Articles", Secret("devnews", "articles")) ]
-            args (Arg("parse"))
+            args (Arg("--article-quantity"))
+            args (Arg("10"))
         }
 
     let cron =

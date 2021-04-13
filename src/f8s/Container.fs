@@ -96,7 +96,7 @@ module Container =
         member this.AddArgs(state: ContainerState, arg: Arg) =
             match state.Args with
             | Some(arguments) -> 
-                { state with Args = Some(arg :: arguments)}
+                { state with Args = Some(arguments @ [arg])}
             | None -> 
                 { state with Args = Some([arg])}
 
