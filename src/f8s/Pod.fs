@@ -7,21 +7,34 @@ module PodSpec =
     open k8s
     open k8s.Models
 
-    type PodSpecState = { Containers: V1Container list }
+    type PodSpecState = { Containers: V1Container list; ImagePullSecrets: string list option }
+
+    let private getSecrets(imagePullSecret: string list option) : ResizeArray<V1LocalObjectReference> =
+        match imagePullSecret with
+        | Some(secretsList) -> 
+            secretsList |> List.map(fun secret -> V1LocalObjectReference(secret)) |> toList
+        | None ->
+            null
 
     type PodSpecBuilder internal () =
         member this.Yield(_) =
-            { Containers = []; }
+            { Containers = []; ImagePullSecrets = None }
         
         member this.Run(state: PodSpecState) =
             let containers = state.Containers |> toList
-            V1PodSpec(containers = containers)                      
+            let pullSecret = state.ImagePullSecrets |> getSecrets
+            V1PodSpec(containers = containers, imagePullSecrets = pullSecret)                      
                 
         [<CustomOperation("container")>]
         member this.AddContainer (state: PodSpecState, container: V1Container) =
             { state with Containers = container :: state.Containers }                   
 
-    let pod = PodSpecBuilder()    
+        [<CustomOperation("imagePullSecret")>]
+        member this.AddImagePullSecret (state: PodSpecState, secretName: string) =
+            let newSecrets = state.ImagePullSecrets |> Option.map(fun s -> secretName :: s) |> Option.orElseWith(fun () -> Some([secretName]))
+            { state with ImagePullSecrets = newSecrets }  
+
+    let podSpec = PodSpecBuilder()    
 
 [<AutoOpen>]
 module Pod = 
@@ -32,11 +45,11 @@ module Pod =
 
     type PodBuilder internal () =
         member this.Yield(_) =
-            { Spec = None; MetaData = None }
+            { Spec = None; MetaData = None; }
         
         member this.Run(state: PodState) =
             let spec = defaultArg state.Spec (V1PodSpec(containers = ResizeArray()))
-            let meta = defaultArg state.MetaData null
+            let meta = defaultArg state.MetaData null          
             V1Pod(spec = spec, apiVersion = "v1", metadata = meta, kind = "Pod")                
 
         [<CustomOperation("spec")>]

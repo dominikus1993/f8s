@@ -25,11 +25,17 @@ let main argv =
             args (Arg("10"))
         }
 
+    let devNewsPod = 
+        podSpec {
+            container devnewsContainer
+            imagePullSecret "dockerhub"
+        }
+
     let cron =
         cronJob {
             metadata meta
             schedule "0 10 * * 1"
-            container devnewsContainer
+            spec devNewsPod
         }
 
     let yaml = cron |> Serialization.toYaml
