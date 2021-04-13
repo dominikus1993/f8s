@@ -20,6 +20,17 @@ module Container =
             | IfNotPresent -> "IfNotPresent"
             | Never -> "Never"
 
+    let private getArgs(args: Arg list option) : ResizeArray<string> =
+        let getArg(a: Arg) =
+            let (Arg(arg)) = a
+            arg
+
+        match args with
+        | Some(argList) -> 
+            argList |> List.map(getArg) |> toList
+        | None ->
+            null
+
     type ContainerState =
         { Name: string option
           Image: Image option
@@ -57,7 +68,6 @@ module Container =
                         | _ -> None)
                 |> toList
 
-
             let envsFrom =
                 state.Env
                 |> List.choose
@@ -67,9 +77,9 @@ module Container =
                         | _ -> None)
                 |> toList
             
-            let args = defaultArg state.Args null
+            let args = state.Args |> getArgs
 
-            V1Container(name = name, imagePullPolicy = ipp, image = imageName, env = envs, envFrom = envsFrom)
+            V1Container(name = name, imagePullPolicy = ipp, image = imageName, env = envs, envFrom = envsFrom, args = args)
 
         [<CustomOperation("name")>]
         member this.Name(state: ContainerState, name: string) =
@@ -81,6 +91,14 @@ module Container =
 
         [<CustomOperation("image")>]
         member this.Image(state: ContainerState, image: Image) = { state with Image = Some(image) }
+
+        [<CustomOperation("args")>]
+        member this.AddArgs(state: ContainerState, arg: Arg) =
+            match state.Args with
+            | Some(arguments) -> 
+                { state with Args = Some(arg :: arguments)}
+            | None -> 
+                { state with Args = Some([arg])}
 
         [<CustomOperation("image_pull_policy")>]
         member this.ImagePullPolicy(state: ContainerState, policy: ImagePullPolicy) =
