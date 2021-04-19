@@ -18,3 +18,27 @@ let ``Test one name value env`` () =
         subject.Value |> should equal "xDDD"
     | _ ->
         Assert.True(false)
+
+[<Fact>]
+let ``Test one secret ref env`` () =
+    let environment = env {
+        add_var (SecretRef("xD", Secret("xDDD", "xDD")))
+    }
+    match environment with
+    | [Choice1Of2(subject)] -> 
+        subject.Name |> should equal "xD"
+        subject.ValueFrom.SecretKeyRef.Key |> should equal "xDD"
+        subject.ValueFrom.SecretKeyRef.Name |> should equal "xDDD"
+    | _ ->
+        Assert.True(false)
+
+[<Fact>]
+let ``Test one configMap env`` () =
+    let environment = env {
+        add_var (ConfigMap("xD"))
+    }
+    match environment with
+    | [Choice2Of2(subject)] -> 
+        subject.ConfigMapRef.Name |> should equal "xD"
+    | _ ->
+        Assert.True(false)
