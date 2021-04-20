@@ -18,5 +18,13 @@
     <Compile Include="Deployment.fs" />
     <Compile Include="CronJob.fs" />
   </ItemGroup>
+   <ItemGroup>
+   <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+     <_Parameter1>$(AssemblyName).tests</_Parameter1>
+   </AssemblyAttribute>
+   <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+     <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+   </AssemblyAttribute>
+ </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
