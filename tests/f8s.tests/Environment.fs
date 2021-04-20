@@ -20,6 +20,20 @@ let ``Test one name value env`` () =
         Assert.True(false)
 
 [<Fact>]
+let ``Test add name value envs`` () =
+    let environment = env {
+        add_vars ([NameValue("xD", "xDDD"); NameValue("xDD", "xDDD")])
+    }
+    match environment with
+    | [Choice1Of2(subject1); Choice1Of2(subject2)] -> 
+        subject1.Name |> should equal "xD"
+        subject1.Value |> should equal "xDDD"
+        subject2.Name |> should equal "xDD"
+        subject2.Value |> should equal "xDDD"        
+    | _ ->
+        Assert.True(false)
+
+[<Fact>]
 let ``Test one secret ref env`` () =
     let environment = env {
         add_var (SecretRef("xD", Secret("xDDD", "xDD")))
