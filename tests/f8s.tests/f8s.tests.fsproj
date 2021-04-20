@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="Api.fs" />
     <Compile Include="Environment.fs" />
+    <Compile Include="Namespace.fs" />
     <Compile Include="Image.fs" />
     <Compile Include="Utils.fs" />
     <Compile Include="Program.fs" />
