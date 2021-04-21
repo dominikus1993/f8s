@@ -109,6 +109,6 @@ module Container =
             { state with
                   Env =
                       env
-                      |> List.map (fun e -> Environment.mapConfig (e)) }
+                      |> List.map (mapConfig) }
 
     let container = ContainerBuilder()
