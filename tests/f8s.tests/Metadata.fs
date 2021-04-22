@@ -8,7 +8,13 @@ open FsUnit.Xunit
 open FSharpNetes
 
 [<Fact>]
-let ``Test image with latest tag`` () =
-    let image = Image("xD", Latest)
-    let subject = image |> Image.imageName
-    subject |> should equal "xD:latest"
+let ``Test metadata`` () =
+    let subject = metadata {
+        name "test"
+        nmspc "xD"
+        label (Label("test", "test"))
+    }
+    
+    subject.Name |> should equal "test"
+    subject.NamespaceProperty |> should equal "xD"
+    subject.Labels.["test"] |> should equal "test"
