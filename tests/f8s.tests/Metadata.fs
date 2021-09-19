@@ -18,3 +18,15 @@ let ``Test metadata`` () =
     subject.Name |> should equal "test"
     subject.NamespaceProperty |> should equal "xD"
     subject.Labels.["test"] |> should equal "test"
+
+let ``Test metadata labels`` () =
+    let subject = metadata {
+        name "test"
+        nmspc "xD"
+        labels ([Label("test", "test"); Label("test2", "test2")])
+    }
+    
+    subject.Name |> should equal "test"
+    subject.NamespaceProperty |> should equal "xD"
+    subject.Labels.["test"] |> should equal "test"
+    subject.Labels.["test2"] |> should equal "test2"

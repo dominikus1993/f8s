@@ -4,6 +4,7 @@ open k8s.Models
 [<AutoOpen>]
 module MetaData =
     type Label = Label of name: string * value: string
+    type Labels = Label list
 
     type MetaDataState = { Name: string option; Namespace: string option; Labels: Map<string, string> }
     
@@ -29,5 +30,8 @@ module MetaData =
             let (Label(name, value)) = label
             { state with Labels = Map.add name value state.Labels }
 
-            
+        [<CustomOperation("labels")>]
+        member this.Labels (state: MetaDataState, labels: Labels) =
+            List.fold(fun acc label -> this.Label(acc, label)) state labels
+
     let metadata = MetaDataBuilder()
