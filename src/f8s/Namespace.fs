@@ -22,7 +22,8 @@ module Namespace =
     
     let nmspc = NamespaceBuilder()
 
-    let create (client: Kubernetes)(pod: V1Namespace) =
+    // craete a namespace
+    let create (client: Kubernetes)(pod: V1Namespace): Async<V1Namespace> =
         async {
             let nmspc = client.CreateNamespace(pod)
             return nmspc
