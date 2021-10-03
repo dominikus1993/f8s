@@ -8,6 +8,8 @@
     <Compile Include="Serialization.fs" />
     <Compile Include="MetaData.fs" />
     <Compile Include="Namespace.fs" />
+    <Compile Include="Env.fs" />
+    <Compile Include="Container.fs" />
     <Compile Include="Pod.fs" />
   </ItemGroup>
    <ItemGroup>

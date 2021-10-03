@@ -6,6 +6,7 @@
     <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Env.fs" />
     <Compile Include="Metadata.fs" />
     <Compile Include="Namespace.fs" />
     <Compile Include="Pod.fs" />
