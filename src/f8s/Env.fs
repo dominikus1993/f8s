@@ -4,13 +4,13 @@ open k8s.Models
 
 [<AutoOpen>]
 module Environment =
-
+    type FieldPath = FieldPath of string
     type ValueFrom = ValueFrom of name: string * key: string 
     type EnvironmentVariable =
         | NameValue of name: string * value: string
         | ConfigMap of name: string
         | SecretRef of name: string * valueFrom: ValueFrom
-        | FieldRef of name: string * fieldPath: string
+        | FieldRef of name: string * fieldPath: FieldPath
         
     type EnvironmentVariables = EnvironmentVariable list
     type EnvironmentState = { Variables: EnvironmentVariable list }
@@ -20,7 +20,7 @@ module Environment =
         | NameValue(name, value) -> Choice1Of2(V1EnvVar(name, value))
         | ConfigMap(name) -> Choice2Of2(V1EnvFromSource(configMapRef = V1ConfigMapEnvSource(name)))
         | SecretRef(envName, ValueFrom(name, key)) -> Choice1Of2(V1EnvVar(envName, valueFrom = V1EnvVarSource(secretKeyRef = V1SecretKeySelector(key, name))))
-        | FieldRef(envName, fieldPath) -> Choice1Of2(V1EnvVar(envName, valueFrom = V1EnvVarSource(fieldRef = V1ObjectFieldSelector(fieldPath))))
+        | FieldRef(envName, FieldPath(fieldPath)) -> Choice1Of2(V1EnvVar(envName, valueFrom = V1EnvVarSource(fieldRef = V1ObjectFieldSelector(fieldPath))))
         
     type EnvironmentBuilder internal () =
         member this.Yield(_) =
