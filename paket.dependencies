@@ -13,3 +13,4 @@ nuget xunit
 nuget xunit.runner.visualstudio
 nuget coverlet.collector
 nuget FsUnit.xUnit
+nuget semver

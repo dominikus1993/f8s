@@ -1,13 +1,16 @@
 namespace FSharpNetes
+open Semver
 
 type Version =
     | Latest
     | SemVer of string
+    | Hex of string
 with
-    member this.GetVersion() =
+    member internal this.GetVersion() =
         match this with
         | Latest -> "latest"
         | SemVer(v) -> v
+        | Hex(v) -> v
     
 type Image = Image of name: string * version : Version
     
