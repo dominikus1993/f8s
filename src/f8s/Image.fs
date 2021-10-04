@@ -4,13 +4,13 @@ open Semver
 type Version =
     | Latest
     | SemVer of string
-    | Hex of string
+    | Custom of string
 with
     member internal this.GetVersion() =
         match this with
         | Latest -> "latest"
-        | SemVer(v) -> v
-        | Hex(v) -> v
+        | SemVer(v) -> SemVersion.Parse(v).ToString()
+        | Custom(v) -> v
     
 type Image = Image of name: string * version : Version
     
