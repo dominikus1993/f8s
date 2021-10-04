@@ -10,16 +10,6 @@ module Container =
     open k8s.Models
 
     type Arg = Arg of string
-    type ImagePullPolicy =
-        | Always
-        | IfNotPresent
-        | Never
-        member internal this.ToKubeValue() =
-            match this with
-            | Always -> "Always"
-            | IfNotPresent -> "IfNotPresent"
-            | Never -> "Never"
-
     let private getArgs(args: Arg list option) : ResizeArray<string> =
         let getArg(a: Arg) =
             let (Arg(arg)) = a

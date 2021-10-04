@@ -1,6 +1,17 @@
 namespace FSharpNetes
 open Semver
 
+type ImagePullPolicy =
+    | Always
+    | IfNotPresent
+    | Never
+    member internal this.ToKubeValue() =
+        match this with
+        | Always -> "Always"
+        | IfNotPresent -> "IfNotPresent"
+        | Never -> "Never"
+
+
 type Version =
     | Latest
     | SemVer of string
