@@ -19,6 +19,11 @@ let main argv =
         labels ([Label("app", "test"); Label("server", "nginx")])
     }
 
+    let nginxCont = container {
+        name "nginx"
+        image (Image("nginx", Latest))
+    }
+
     
 
     let yaml = myNamespace |> Serialization.toYaml
