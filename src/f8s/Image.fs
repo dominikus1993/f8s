@@ -5,12 +5,12 @@ type ImagePullPolicy =
     | Always
     | IfNotPresent
     | Never
-    member internal this.ToKubeValue() =
-        match this with
+module ImagePullPolicy = 
+    let toKubeValue policy =
+        match policy with
         | Always -> "Always"
         | IfNotPresent -> "IfNotPresent"
         | Never -> "Never"
-
 
 type Version =
     | Latest

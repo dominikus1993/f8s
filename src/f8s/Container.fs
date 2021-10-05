@@ -11,13 +11,9 @@ module Container =
 
     type Arg = Arg of string
     let private getArgs(args: Arg list option) : ResizeArray<string> =
-        let getArg(a: Arg) =
-            let (Arg(arg)) = a
-            arg
-
         match args with
         | Some(argList) -> 
-            argList |> List.map(getArg) |> toList
+            argList |> List.map(fun (Arg arg) -> arg) |> toList
         | None ->
             null
 
@@ -40,7 +36,7 @@ module Container =
             let name =
                 defaultArg state.Name (Guid.NewGuid().ToString())
 
-            let ipp = state.ImagePullPolicy.ToKubeValue()
+            let ipp = state.ImagePullPolicy |> ImagePullPolicy.toKubeValue
 
             let image =
                 match state.Image with
