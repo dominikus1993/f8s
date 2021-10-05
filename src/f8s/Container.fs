@@ -9,6 +9,18 @@ module Container =
     open k8s
     open k8s.Models
 
+    type ContainerPort =
+        | TCP of int
+        | UDP of int
+
+    module private ContainerPort =
+        let toKubeValue(port:ContainerPort) =
+            match port with
+            | TCP(port) ->           
+                V1ContainerPort(containerPort = port, protocol = "TCP")
+            | UDP(port) ->
+                V1ContainerPort(containerPort = port, protocol = "UDP")
+
     type Arg = Arg of string
     let private getArgs(args: Arg list option) : ResizeArray<string> =
         match args with
@@ -22,6 +34,7 @@ module Container =
           Image: Image option
           ImagePullPolicy: ImagePullPolicy
           Args: Arg list option
+          Ports: ContainerPort list option
           Env: Choice<V1EnvVar, V1EnvFromSource> list }
 
     type ContainerBuilder internal () =
@@ -30,6 +43,7 @@ module Container =
               Image = None
               ImagePullPolicy = Always
               Env = []
+              Ports = None
               Args = None }
 
         member this.Run(state: ContainerState) =
@@ -65,7 +79,8 @@ module Container =
             
             let args = state.Args |> getArgs
 
-            V1Container(name = name, imagePullPolicy = ipp, image = imageName, env = envs, envFrom = envsFrom, args = args)
+            let ports = state.Ports |> Option.map(fun ports -> ports |> List.map(fun p -> p |> ContainerPort.toKubeValue) |> toList)  
+            V1Container(name = name, imagePullPolicy = ipp, image = imageName, env = envs, envFrom = envsFrom, args = args, ports = defaultArg ports (null))
 
         [<CustomOperation("name")>]
         member this.Name(state: ContainerState, name: string) =
@@ -85,6 +100,14 @@ module Container =
                 { state with Args = Some(arguments @ [arg])}
             | None -> 
                 { state with Args = Some([arg])}
+
+        [<CustomOperation("ports")>]
+        member this.AddPorts(state: ContainerState, ports: ContainerPort list) =
+            match state.Ports with
+            | Some(p) -> 
+                { state with Ports = Some(p @ ports)}
+            | None -> 
+                { state with Ports = Some(ports)}
 
         [<CustomOperation("image_pull_policy")>]
         member this.ImagePullPolicy(state: ContainerState, policy: ImagePullPolicy) =

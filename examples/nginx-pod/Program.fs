@@ -23,11 +23,17 @@ let main argv =
         name "nginx"
         image (Image("nginx", Latest))
         image_pull_policy (IfNotPresent)
-        env ([NameValue("PORT", "8080")])
+        env [NameValue("PORT", "8080")]
+        ports [TCP(8080)]
+    }
+
+    let nginxPod = pod {
+        metadata meta
+        containers [nginxCont]
     }
 
     
 
-    let yaml = nginxCont |> Serialization.toYaml
+    let yaml = nginxPod |> Serialization.toYaml
     printfn $"{yaml}"
     0 // return an integer exit code
