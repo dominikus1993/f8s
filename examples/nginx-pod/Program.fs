@@ -16,13 +16,14 @@ let main argv =
     let meta = metadata {
         name "test"
         nmspc "test"
-        labels ([Label("app", "test"); Label("server", "nginx")])
+        labels [Label("app", "test"); Label("server", "nginx")]
     }
 
     let nginxCont = container {
         name "nginx"
         image (Image("nginx", Latest))
         image_pull_policy (IfNotPresent)
+        command ["nginx"; "-g"; "daemon off;"]
         env [NameValue("PORT", "8080")]
         ports [TCP(8080)]
     }
@@ -31,8 +32,6 @@ let main argv =
         metadata meta
         containers [nginxCont]
     }
-
-    
 
     let yaml = nginxPod |> Serialization.toYaml
     printfn $"{yaml}"
