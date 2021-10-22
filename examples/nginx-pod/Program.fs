@@ -30,7 +30,7 @@ let main argv =
 
     let nginxPod = pod {
         metadata meta
-        containers [nginxCont]
+        container nginxCont
     }
 
     let yaml = nginxPod |> Serialization.toYaml

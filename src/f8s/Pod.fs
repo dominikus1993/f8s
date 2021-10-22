@@ -19,6 +19,10 @@ module Pod =
         member this.Name (state: PodState, meta: V1ObjectMeta) =
             { state with MetaData = Some(meta) }
 
+        [<CustomOperation("container")>]
+        member this.Container (state: PodState, containers: V1Container) =
+            this.Containers(state, [containers])
+
         [<CustomOperation("containers")>]
         member this.Containers (state: PodState, containers: V1Container list) =
             match state.Containers with
@@ -26,6 +30,7 @@ module Pod =
                 { state with Containers = Some(cont @ containers)}
             | None ->
                 { state with Containers = Some(containers)}
+
     
     let pod = PodBuilder()
             
