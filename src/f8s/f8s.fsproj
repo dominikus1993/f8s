@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Utils.fs" />
@@ -13,13 +13,5 @@
     <Compile Include="Container.fs" />
     <Compile Include="Pod.fs" />
   </ItemGroup>
-   <ItemGroup>
-   <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-     <_Parameter1>$(AssemblyName).tests</_Parameter1>
-   </AssemblyAttribute>
-   <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-     <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
-   </AssemblyAttribute>
- </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
