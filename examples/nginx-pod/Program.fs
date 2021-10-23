@@ -26,7 +26,9 @@ let main argv =
         command ["nginx"; "-g"; "daemon off;"]
         env [NameValue("PORT", "8080")]
         ports [TCP(8080)]
-    }
+    }   
+
+    let a = 3;
 
     let nginxPod = pod {
         metadata meta

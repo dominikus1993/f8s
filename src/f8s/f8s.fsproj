@@ -12,6 +12,7 @@
     <Compile Include="Image.fs" />
     <Compile Include="Container.fs" />
     <Compile Include="Pod.fs" />
+    <Compile Include="Deployment.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
