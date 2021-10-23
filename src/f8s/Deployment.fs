@@ -14,7 +14,7 @@ module Deployment =
         member this.Run(state: Deploymenttate) = 
             let meta = defaultArg state.MetaData (V1ObjectMeta())
             let containers = defaultArg state.Containers [] |> Utils.toList
-
+            
             let spec = V1DeploymentSpec(selector = V1LabelSelector(),template = V1PodTemplateSpec(spec = V1PodSpec(containers = containers)))
             V1Deployment(metadata = meta, spec = spec)
 
