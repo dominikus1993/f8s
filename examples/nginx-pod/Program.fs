@@ -28,13 +28,18 @@ let main argv =
         ports [TCP(8080)]
     }   
 
-    let a = 3;
-
     let nginxPod = pod {
         metadata meta
         container nginxCont
     }
 
-    let yaml = nginxPod |> Serialization.toYaml
+    let nginxDeployemt = deployment {
+        metadata meta
+        replicas 2
+        selector (MatchLabels("app", "test"))
+        pod nginxPod
+    }
+
+    let yaml = nginxDeployemt |> Serialization.toYaml
     printfn $"{yaml}"
     0 // return an integer exit code

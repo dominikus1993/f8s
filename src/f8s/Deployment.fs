@@ -10,23 +10,26 @@ module Deployment =
     type Selector = 
         | MatchLabels of key: string * value: string
 
-    type Deploymenttate = { MetaData: V1ObjectMeta option; Pod: V1PodSpec option; Selectors: Selector list option  }
+    type Deploymenttate = { MetaData: V1ObjectMeta option; Pod: V1PodSpec option; Selectors: Selector list option; Replicas: int option  }
     
     let private mapSelectors (selectors: Selector list) =
-        let mapSelector selector 
+        let mapSelector s state =
             match s with
              MatchLabels(k, v) ->
-                V1LabelSelector(matchLabels = )
+                { state with MatchLabels = state.MatchLabels |> Map.add k v}
+        let res = selectors |> List.fold (fun acc x -> mapSelector x acc) ({ MatchLabels = Map.empty})
+        V1LabelSelector(matchLabels = res.MatchLabels)
 
     type DeploymentBuilder internal () =
         member this.Yield(_) =
-            { MetaData = None; Pod = None; Selector = None }
+            { MetaData = None; Pod = None; Selectors = None; Replicas = None }
         
         member this.Run(state: Deploymenttate) = 
             let meta = defaultArg state.MetaData (V1ObjectMeta())
             let pod = defaultArg state.Pod null
-            let selector = state.Selectors |> Option.map(fun s -> )
-            let spec = V1DeploymentSpec(selector = V1LabelSelector(), template = V1PodTemplateSpec(spec = pod))
+            let selector = defaultArg (state.Selectors |> Option.map(mapSelectors)) null
+            let replicas = defaultArg state.Replicas 1
+            let spec = V1DeploymentSpec(selector = selector, replicas = replicas, template = V1PodTemplateSpec(spec = pod))
             V1Deployment(metadata = meta, spec = spec)
 
         [<CustomOperation("metadata")>]
@@ -34,8 +37,12 @@ module Deployment =
             { state with MetaData = Some(meta) }
 
         [<CustomOperation("pod")>]
-        member this.Container (state: Deploymenttate, pod: V1PodSpec) =
-            { state with Pod = Some(pod) }
+        member this.Container (state: Deploymenttate, pod: V1Pod) =
+            { state with Pod = Some(pod.Spec) }
+
+        [<CustomOperation("replicas")>]
+        member this.Replicas (state: Deploymenttate, replicas: int) =
+            { state with Replicas = Some(replicas) }
 
         [<CustomOperation("selector")>]
         member this.AddSelector (state: Deploymenttate, selector: Selector) =
