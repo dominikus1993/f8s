@@ -22,3 +22,8 @@ let ``Test container`` () =
     let env = nginxCont.Env.[0]
     env.Name |> should equal "PORT"
     env.Value |> should equal "8080"
+    nginxCont.Ports |> should haveCount 1
+    let port = nginxCont.Ports.[0]
+    port.Protocol |> should equal "TCP"
+    port.ContainerPort |> should equal 8080
+    nginxCont.Command |> Seq.toList |> should matchList (["nginx"; "-g"; "daemon off;"])
