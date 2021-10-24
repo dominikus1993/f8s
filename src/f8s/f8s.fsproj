@@ -14,5 +14,10 @@
     <Compile Include="Pod.fs" />
     <Compile Include="Deployment.fs" />
   </ItemGroup>
+   <ItemGroup>
+   <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+     <_Parameter1>f8s.tests</_Parameter1>
+   </AssemblyAttribute>
+ </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

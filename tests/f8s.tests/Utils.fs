@@ -12,3 +12,4 @@ let ``Test to list`` () =
     let list = [1;2;3;4]
     let subject = list |> toList
     subject |> should haveCount 4
+   

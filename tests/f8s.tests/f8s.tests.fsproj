@@ -10,7 +10,9 @@
     <Compile Include="Metadata.fs" />
     <Compile Include="Namespace.fs" />
     <Compile Include="Image.fs" />
+    <Compile Include="Container.fs" />
     <Compile Include="Pod.fs" />
+    <Compile Include="Deployment.fs" />
     <Compile Include="Utils.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
