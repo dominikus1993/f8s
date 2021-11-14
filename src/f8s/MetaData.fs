@@ -9,24 +9,24 @@ module MetaData =
     type MetaDataState = { Name: string option; Namespace: string option; Labels: Map<string, string> }
     
     type MetaDataBuilder internal () =
-        member this.Yield(_) =
+        member _.Yield(_) =
             { Name = None; Namespace = None; Labels = Map.empty }
         
-        member this.Run(state: MetaDataState) = 
+        member _.Run(state: MetaDataState) = 
             let name = defaultArg state.Name null
             let nmspc = defaultArg state.Namespace "default"
             V1ObjectMeta(name = name, namespaceProperty = nmspc, labels = state.Labels)
 
         [<CustomOperation("name")>]
-        member this.Name (state: MetaDataState, name: string) =
+        member _.Name (state: MetaDataState, name: string) =
             { state with Name = Some(name) }
 
         [<CustomOperation("nmspc")>]
-        member this.Namespace (state: MetaDataState, name: string) =
+        member _.Namespace (state: MetaDataState, name: string) =
             { state with Namespace = Some(name) }
         
         [<CustomOperation("label")>]
-        member this.Label (state: MetaDataState, label: Label) =
+        member _.Label (state: MetaDataState, label: Label) =
             let (Label(name, value)) = label
             { state with Labels = Map.add name value state.Labels }
 
