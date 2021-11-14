@@ -19,7 +19,6 @@
 	"extensions": [
 		"Ionide.Ionide-fsharp",
 		"ms-dotnettools.csharp",
-		"GitHub.copilot",
 		"wakatime.vscode-wakatime"
 	],
 
