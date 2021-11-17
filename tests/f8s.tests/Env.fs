@@ -63,3 +63,14 @@ let ``Test FieldRef env`` () =
         var.Name |> should equal "xD"
         var.ValueFrom.FieldRef.FieldPath |> should equal "xDD"
     | _ -> failwith "Should be SecretKeyRef"
+
+
+[<Fact>]
+let ``Test Multifield env`` () =
+    let subject = env {
+        add_var (FieldRef("xD", FieldPath("xDD")))
+        add_var (NameValue("xD", "test"))
+        add_vars [(NameValue("xD2", "test2")); ConfigMap("xD")]
+    }
+    
+    subject |> should haveLength 4
