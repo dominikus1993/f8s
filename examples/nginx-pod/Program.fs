@@ -39,4 +39,13 @@ let nginxDeployemt = deployment {
 }
 
 let yaml = nginxDeployemt |> Serialization.toYaml
-printfn $"{yaml}"
+printfn $"Deployment: \n {yaml}"
+
+let nginxService = service {
+    metadata meta
+    selector (ServiceSelector("app", "test"))
+    port (ServicePort.TCP("http", 8080, 8080))
+}
+
+let syaml = nginxService |> Serialization.toYaml
+printfn $"Service: \n {syaml}"
