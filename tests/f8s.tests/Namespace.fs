@@ -17,6 +17,8 @@ let ``Test one name value env`` () =
         metadata meta
     }
     
+    testNamespace.ApiVersion |> should equal "v1"
+    testNamespace.Kind |> should equal "Namespace"
     testNamespace.Metadata.Name |> should equal "test"
     let label = testNamespace.Metadata.Labels.["test"]
     label |> should equal "test"

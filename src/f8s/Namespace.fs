@@ -13,7 +13,7 @@ module Namespace =
         
         member this.Run(state: NamespaceState) = 
             let meta = defaultArg state.MetaData (V1ObjectMeta())
-            V1Namespace(metadata = meta)
+            V1Namespace(metadata = meta, kind="Namespace", apiVersion = "v1")
 
         [<CustomOperation("metadata")>]
         member this.Name (state: NamespaceState, meta: V1ObjectMeta) =

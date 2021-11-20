@@ -32,6 +32,8 @@ let ``Test pod`` () =
         pod nginxPod
     }
 
+    nginxDeployemt.ApiVersion |> should equal "apps/v1"
+    nginxDeployemt.Kind |> should equal "Deployment"
     nginxDeployemt.Metadata.Name |> should equal meta.Name
     nginxDeployemt.Metadata.NamespaceProperty |> should equal meta.NamespaceProperty
     nginxDeployemt.Spec.Replicas |> should equal 2

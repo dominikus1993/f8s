@@ -25,6 +25,9 @@ let ``Test pod`` () =
         metadata meta
         container nginxCont
     }
+
+    nginxPod.ApiVersion |> should equal "v1"
+    nginxPod.Kind |> should equal "Pod"
     nginxPod.Metadata.Name |> should equal meta.Name
     nginxPod.Metadata.NamespaceProperty |> should equal meta.NamespaceProperty
     nginxPod.Spec.Containers |> should haveCount 1

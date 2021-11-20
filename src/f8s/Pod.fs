@@ -13,7 +13,7 @@ module Pod =
         member this.Run(state: PodState) = 
             let meta = defaultArg state.MetaData (V1ObjectMeta())
             let containers = defaultArg state.Containers [] |> Utils.toList
-            V1Pod(metadata = meta, spec = V1PodSpec(containers = containers))
+            V1Pod(metadata = meta, spec = V1PodSpec(containers = containers), apiVersion = "v1", kind = "Pod")
 
         [<CustomOperation("metadata")>]
         member this.Name (state: PodState, meta: V1ObjectMeta) =
