@@ -30,7 +30,7 @@ module Deployment =
             let selector = defaultArg (state.Selectors |> Option.map(mapSelectors)) null
             let replicas = defaultArg state.Replicas 1
             let spec = V1DeploymentSpec(selector = selector, replicas = replicas, template = V1PodTemplateSpec(spec = pod))
-            V1Deployment(metadata = meta, spec = spec)
+            V1Deployment(metadata = meta, spec = spec, kind = "Deployment", apiVersion = "apps/v1")
 
         [<CustomOperation("metadata")>]
         member this.Name (state: Deploymenttate, meta: V1ObjectMeta) =

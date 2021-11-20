@@ -35,7 +35,7 @@ module Service =
             let meta = defaultArg state.MetaData (V1ObjectMeta())
             let ports = defaultArg state.Ports [] |> List.map(mapPort) |> Utils.toList
             let selectors = defaultArg state.Selector [] |> mapSelectors 
-            V1Service(metadata = meta, spec = V1ServiceSpec(ports = ports, selector = selectors))
+            V1Service(metadata = meta, spec = V1ServiceSpec(ports = ports, selector = selectors), kind = "Service", apiVersion = "v1")
 
         [<CustomOperation("metadata")>]
         member this.Name (state: ServiceState, meta: V1ObjectMeta) =
