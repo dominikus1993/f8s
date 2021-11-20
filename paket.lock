@@ -80,7 +80,7 @@ NUGET
     NHamcrest (2.0.1)
       NETStandard.Library (>= 1.6.1)
     NuGet.Frameworks (6.0)
-    prometheus-net (5.0.1)
+    prometheus-net (5.0.2)
       Microsoft.Extensions.Http (>= 3.1.9)
     Semver (2.0.6)
       NETStandard.Library (>= 1.6.1)

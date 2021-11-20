@@ -11,35 +11,32 @@ let myNamespace =
         metadata meta
     }
 
-[<EntryPoint>]
-let main argv =
-    let meta = metadata {
-        name "test"
-        nmspc "test"
-        labels [Label("app", "test"); Label("server", "nginx")]
-    }
+let meta = metadata {
+    name "test"
+    nmspc "test"
+    labels [Label("app", "test"); Label("server", "nginx")]
+}
 
-    let nginxCont = container {
-        name "nginx"
-        image (Image("nginx", Latest))
-        image_pull_policy (IfNotPresent)
-        command ["nginx"; "-g"; "daemon off;"]
-        env [NameValue("PORT", "8080")]
-        ports [TCP(8080)]
-    }   
+let nginxCont = container {
+    name "nginx"
+    image (Image("nginx", Latest))
+    image_pull_policy (IfNotPresent)
+    command ["nginx"; "-g"; "daemon off;"]
+    env [NameValue("PORT", "8080")]
+    ports [TCP(8080)]
+}   
 
-    let nginxPod = pod {
-        metadata meta
-        container nginxCont
-    }
+let nginxPod = pod {
+    metadata meta
+    container nginxCont
+}
 
-    let nginxDeployemt = deployment {
-        metadata meta
-        replicas 2
-        selector (MatchLabels("app", "test"))
-        pod nginxPod
-    }
+let nginxDeployemt = deployment {
+    metadata meta
+    replicas 2
+    selector (MatchLabels("app", "test"))
+    pod nginxPod
+}
 
-    let yaml = nginxDeployemt |> Serialization.toYaml
-    printfn $"{yaml}"
-    0 // return an integer exit code
+let yaml = nginxDeployemt |> Serialization.toYaml
+printfn $"{yaml}"
