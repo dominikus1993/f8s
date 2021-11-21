@@ -10,7 +10,7 @@ module Deployment =
     type Selector = 
         | MatchLabels of key: string * value: string
 
-    type Deploymenttate = { MetaData: V1ObjectMeta option; Pod: V1PodSpec option; Selectors: Selector list option; Replicas: int option  }
+    type Deploymenttate = { MetaData: V1ObjectMeta option; Pod: V1PodSpec option; Selectors: Selector list option; Replicas: int option; }
     
     let private mapSelectors (selectors: Selector list) =
         let mapSelector s state =
@@ -21,10 +21,10 @@ module Deployment =
         V1LabelSelector(matchLabels = res.MatchLabels)
 
     type DeploymentBuilder internal () =
-        member this.Yield(_) =
-            { MetaData = None; Pod = None; Selectors = None; Replicas = None }
+        member _.Yield(_) =
+            { MetaData = None; Pod = None; Selectors = None; Replicas = None;}
         
-        member this.Run(state: Deploymenttate) = 
+        member _.Run(state: Deploymenttate) = 
             let meta = defaultArg state.MetaData (V1ObjectMeta())
             let pod = defaultArg state.Pod null
             let selector = defaultArg (state.Selectors |> Option.map(mapSelectors)) null
@@ -33,19 +33,19 @@ module Deployment =
             V1Deployment(metadata = meta, spec = spec, kind = "Deployment", apiVersion = "apps/v1")
 
         [<CustomOperation("metadata")>]
-        member this.Name (state: Deploymenttate, meta: V1ObjectMeta) =
+        member _.Name (state: Deploymenttate, meta: V1ObjectMeta) =
             { state with MetaData = Some(meta) }
 
         [<CustomOperation("pod")>]
-        member this.Container (state: Deploymenttate, pod: V1Pod) =
+        member _.Container (state: Deploymenttate, pod: V1Pod) =
             { state with Pod = Some(pod.Spec) }
 
         [<CustomOperation("replicas")>]
-        member this.Replicas (state: Deploymenttate, replicas: int) =
+        member _.Replicas (state: Deploymenttate, replicas: int) =
             { state with Replicas = Some(replicas) }
 
         [<CustomOperation("selector")>]
-        member this.AddSelector (state: Deploymenttate, selector: Selector) =
+        member _.AddSelector (state: Deploymenttate, selector: Selector) =
             match state.Selectors with
             | Some(selectors) ->
                 { state with Selectors = Some(selectors @ [selector]) }

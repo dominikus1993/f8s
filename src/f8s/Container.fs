@@ -45,7 +45,9 @@ module Container =
           Args: Arg list option
           Command: Command list option
           Ports: ContainerPort list option
-          Env: Choice<V1EnvVar, V1EnvFromSource> list }
+          Env: Choice<V1EnvVar, V1EnvFromSource> list
+          Request: Resource option
+          Limits: Resource option }
 
     type ContainerBuilder internal () =
         member this.Yield(_) =
@@ -55,7 +57,9 @@ module Container =
               Env = []
               Command = None
               Ports = None
-              Args = None }
+              Args = None 
+              Request = None 
+              Limits = None }
 
         member this.Run(state: ContainerState) =
             let name =
@@ -101,6 +105,10 @@ module Container =
                         |> List.map (fun p -> p |> ContainerPort.toKubeValue)
                         |> toList)
 
+            let limit = defaultArg (state.Limits |> Option.map(Resource.convertToK8s)) null
+            let request = defaultArg (state.Request |> Option.map(Resource.convertToK8s)) null
+            let resources = V1ResourceRequirements(limits = limit, requests = request)
+
             V1Container(
                 name = name,
                 imagePullPolicy = ipp,
@@ -109,7 +117,8 @@ module Container =
                 command = command,
                 envFrom = envsFrom,
                 args = args,
-                ports = defaultArg ports (null)
+                ports = defaultArg ports (null),
+                resources = resources
             )
 
         [<CustomOperation("name")>]
@@ -149,6 +158,14 @@ module Container =
         [<CustomOperation("image_pull_policy")>]
         member this.ImagePullPolicy(state: ContainerState, policy: ImagePullPolicy) =
             { state with ImagePullPolicy = policy }
+
+        [<CustomOperation("limit")>]
+        member this.Limit(state: ContainerState, limit: Resource) =
+            { state with Limits = Some(limit) }
+
+        [<CustomOperation("request")>]
+        member this.Request(state: ContainerState, req: Resource) =
+            { state with Request = Some(req) }
 
         [<CustomOperation("env")>]
         member this.EnvVar(state: ContainerState, env: EnvironmentVariables) =
