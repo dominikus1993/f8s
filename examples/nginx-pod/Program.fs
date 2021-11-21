@@ -24,6 +24,8 @@ let nginxCont = container {
     command ["nginx"; "-g"; "daemon off;"]
     env [NameValue("PORT", "8080")]
     ports [TCP(8080)]
+    request (Resource(Mi(512), Cpu.M(512)))
+    limit (Resource(Gi(1), Cpu.M(1024)))
 }   
 
 let nginxPod = pod {

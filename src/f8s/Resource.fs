@@ -2,7 +2,8 @@ namespace FSharpNetes
 
 open k8s.Models
 
-type Cpu = M of int
+type Cpu = 
+    | M of int
 
 type Memory =
     | K of int
