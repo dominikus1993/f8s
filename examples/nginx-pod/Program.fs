@@ -3,51 +3,62 @@ open k8s
 open k8s.Models
 
 let myNamespace =
-    let meta = metadata {
-        name "sample"
-        labels ([Label("env", "prod"); Label("app", "nginx-example")])
+    let meta =
+        metadata {
+            name "sample"
+
+            labels (
+                [ Label("env", "prod")
+                  Label("app", "nginx-example") ]
+            )
+        }
+
+    nmspc { metadata meta }
+
+let meta =
+    metadata {
+        name "test"
+        nmspc "test"
+
+        labels [ Label("app", "test")
+                 Label("server", "nginx") ]
     }
-    nmspc {
+
+let nginxCont =
+    container {
+        name "nginx"
+        image (Image("nginx", Latest))
+        image_pull_policy (IfNotPresent)
+        command [ "nginx"; "-g"; "daemon off;" ]
+        env [ NameValue("PORT", "8080") ]
+        ports [ TCP(8080) ]
+        request ({ Memory = Mi(512); Cpu = Cpu.M(512) })
+        limit ({ Memory = Gi(1); Cpu = Cpu.M(1024) })
+    }
+
+let nginxPod =
+    pod {
         metadata meta
+        container nginxCont
     }
 
-let meta = metadata {
-    name "test"
-    nmspc "test"
-    labels [Label("app", "test"); Label("server", "nginx")]
-}
-
-let nginxCont = container {
-    name "nginx"
-    image (Image("nginx", Latest))
-    image_pull_policy (IfNotPresent)
-    command ["nginx"; "-g"; "daemon off;"]
-    env [NameValue("PORT", "8080")]
-    ports [TCP(8080)]
-    request (Resource(Mi(512), Cpu.M(512)))
-    limit (Resource(Gi(1), Cpu.M(1024)))
-}   
-
-let nginxPod = pod {
-    metadata meta
-    container nginxCont
-}
-
-let nginxDeployemt = deployment {
-    metadata meta
-    replicas 2
-    selector (MatchLabels("app", "test"))
-    pod nginxPod
-}
+let nginxDeployemt =
+    deployment {
+        metadata meta
+        replicas 2
+        selector (MatchLabels("app", "test"))
+        pod nginxPod
+    }
 
 let yaml = nginxDeployemt |> Serialization.toYaml
-printfn $"Deployment: \n {yaml}"
+printfn $"Deployment: \n{yaml}"
 
-let nginxService = service {
-    metadata meta
-    selector (ServiceSelector("app", "test"))
-    port (ServicePort.TCP("http", 8080, 8080))
-}
+let nginxService =
+    service {
+        metadata meta
+        selector (ServiceSelector("app", "test"))
+        port (ServicePort.TCP("http", 8080, 8080))
+    }
 
 let syaml = nginxService |> Serialization.toYaml
-printfn $"Service: \n {syaml}"
+printfn $"Service: \n{syaml}"

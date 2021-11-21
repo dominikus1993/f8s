@@ -38,8 +38,8 @@ let ``Test container with resources`` () =
         command ["nginx"; "-g"; "daemon off;"]
         env [NameValue("PORT", "8080")]
         ports [TCP(8080)]
-        request (Resource(Mi(512), Cpu.M(512)))
-        limit (Resource(Gi(1), Cpu.M(1024)))
+        request ({ Memory = Mi(512); Cpu = Cpu.M(512) })
+        limit ({ Memory = Gi(1); Cpu = Cpu.M(1024) })
     }   
 
     nginxCont.Resources.Limits |> should haveCount 2

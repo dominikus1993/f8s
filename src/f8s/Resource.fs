@@ -12,7 +12,7 @@ type Memory =
     | Mi of int
     | Gi of int
 
-type Resource = Resource of memory: Memory * cpu: Cpu
+type Resource = { Memory: Memory; Cpu: Cpu }
 
 module Cpu =
     let toResourceQuantity (m: Cpu) : ResourceQuantity =
@@ -36,10 +36,8 @@ module Resource =
     open System.Collections.Generic
 
     let convertToK8s (res: Resource) : IDictionary<string, ResourceQuantity> =
-        let (Resource (memory, cpu)) = res
-
         let res =
-            [ ("cpu", cpu |> Cpu.toResourceQuantity)
-              ("memory", memory |> Memory.toResourceQuantity) ]
+            [ ("cpu", res.Cpu |> Cpu.toResourceQuantity)
+              ("memory", res.Memory |> Memory.toResourceQuantity) ]
 
         Map.ofList res
