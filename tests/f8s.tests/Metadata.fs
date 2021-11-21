@@ -28,5 +28,5 @@ let ``Test metadata labels`` () =
     
     subject.Name |> should equal "test"
     subject.NamespaceProperty |> should equal "xD"
-    subject.Labels.["test"] |> should equal "test"
-    subject.Labels.["test2"] |> should equal "test2"
+    subject.Labels["test"] |> should equal "test"
+    subject.Labels["test2"] |> should equal "test2"

@@ -45,11 +45,11 @@ let ``Test pod`` () =
     cont.Image |> should equal "nginx:latest"
     cont.ImagePullPolicy |> should equal "IfNotPresent"
     cont.Env |> should haveCount 1
-    let env = cont.Env.[0]
+    let env = cont.Env[0]
     env.Name |> should equal "PORT"
     env.Value |> should equal "8080"
     cont.Ports |> should haveCount 1
-    let port = cont.Ports.[0]
+    let port = cont.Ports[0]
     port.Protocol |> should equal "TCP"
     port.ContainerPort |> should equal 8080
     cont.Command |> Seq.toList |> should matchList (["nginx"; "-g"; "daemon off;"])
