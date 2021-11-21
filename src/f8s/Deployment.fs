@@ -6,7 +6,7 @@ open k8s
 module Deployment =
 
     type private SelectorState = { MatchLabels: Map<string, string> }
-
+    
     type Selector = 
         | MatchLabels of key: string * value: string
 

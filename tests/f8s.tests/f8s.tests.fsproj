@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Env.fs" />
+    <Compile Include="Resource.fs" />
     <Compile Include="Metadata.fs" />
     <Compile Include="Namespace.fs" />
     <Compile Include="Image.fs" />
