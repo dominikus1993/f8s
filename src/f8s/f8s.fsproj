@@ -15,6 +15,7 @@
     <Compile Include="Pod.fs" />
     <Compile Include="Deployment.fs" />
     <Compile Include="Service.fs" />
+    <Compile Include="Job.fs" />
   </ItemGroup>
    <ItemGroup>
    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
