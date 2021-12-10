@@ -29,5 +29,5 @@ let ``Test cron job`` () =
     nginxJob.Metadata.NamespaceProperty |> should equal meta.NamespaceProperty
     nginxJob.Spec.Schedule |> should equal "* * * * *"
     nginxJob.Spec.JobTemplate.Metadata.Name |> should equal meta.Name
-    nginxJob.Spec.JobTemplate.Metadata.NamespaceProperty |> should equal meta.NamespaceProperty   
+    nginxJob.Spec.JobTemplate.Metadata.NamespaceProperty |> should equal meta.NamespaceProperty
 
