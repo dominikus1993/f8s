@@ -8,7 +8,7 @@ open FsUnit.Xunit
 open FSharpNetes
 
 [<Fact>]
-let ``Test image with semVer tag`` () =
+let ``Test cron job`` () =
     let meta = metadata {
         name "test"
         nmspc "test"
@@ -26,4 +26,5 @@ let ``Test image with semVer tag`` () =
     nginxJob.ApiVersion |> should equal "batch/v1"
     nginxJob.Metadata.Name |> should equal meta.Name
     nginxJob.Metadata.NamespaceProperty |> should equal meta.NamespaceProperty
+    nginxJob.Spec.Schedule |> should equal "* * * * *"
 
