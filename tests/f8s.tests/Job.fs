@@ -15,6 +15,7 @@ let ``Test cron job`` () =
         labels [Label("app", "test"); Label("server", "nginx")]
     }
     let nginxSpec = cronJobSpec {
+        metadata meta
         schedule "* * * * *"
     }
     let nginxJob = cronjob { 
@@ -27,4 +28,6 @@ let ``Test cron job`` () =
     nginxJob.Metadata.Name |> should equal meta.Name
     nginxJob.Metadata.NamespaceProperty |> should equal meta.NamespaceProperty
     nginxJob.Spec.Schedule |> should equal "* * * * *"
+    nginxJob.Spec.JobTemplate.Metadata.Name |> should equal meta.Name
+    nginxJob.Spec.JobTemplate.Metadata.NamespaceProperty |> should equal meta.NamespaceProperty   
 

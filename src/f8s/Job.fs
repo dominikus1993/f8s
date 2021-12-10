@@ -6,15 +6,20 @@ open k8s.Models
 module CronJobSpec =
     open System
 
-    type CronJobSpecState = { Schedule: string option } 
+    type CronJobSpecState = { Schedule: string option; Metadata: V1ObjectMeta option } 
     type CronJobSpecBuilder internal () =
         member this.Yield(_) =
-            { Schedule = None }
+            { Schedule = None; Metadata = None }
         
         member this.Run(state: CronJobSpecState) = 
             let schedule = defaultArg state.Schedule null
-            let template = V1JobTemplateSpec()
+            let metadata = defaultArg state.Metadata null
+            let template = V1JobTemplateSpec(metadata = metadata)
             V1CronJobSpec(template, schedule = schedule)
+
+        [<CustomOperation("metadata")>]
+        member _.Name (state: CronJobSpecState, meta: V1ObjectMeta) = 
+            { state with Metadata = meta |> Option.ofObj }
 
         [<CustomOperation("schedule")>]
         member _.Name (state: CronJobSpecState, schedule: string) = 
