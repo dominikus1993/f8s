@@ -4,15 +4,16 @@ open k8s
 
 [<AutoOpen>]
 module PodSpec = 
-    type PodSpecState = { Containers: V1Container list option}
+    type PodSpecState = { Containers: V1Container list option; SecurityContext: V1PodSecurityContext option}
 
     type PodSpecBuilder internal () =
         member this.Yield(_) =
-            { Containers = None }
+            { Containers = None; SecurityContext = None }
         
         member this.Run(state: PodSpecState) = 
             let containers = defaultArg state.Containers [] |> Utils.toList
-            V1PodSpec(containers = containers)
+            let security = defaultArg state.SecurityContext null
+            V1PodSpec(containers = containers, securityContext = security)
 
         [<CustomOperation("container")>]
         member this.Container (state: PodSpecState, containers: V1Container) =

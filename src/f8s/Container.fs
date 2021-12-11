@@ -47,10 +47,11 @@ module Container =
           Ports: ContainerPort list option
           Env: Choice<V1EnvVar, V1EnvFromSource> list
           Request: Resource option
-          Limits: Resource option }
+          Limits: Resource option
+          SecurityContext: V1SecurityContext option }
 
     type ContainerBuilder internal () =
-        member this.Yield(_) =
+        member _.Yield(_) =
             { Name = None
               Image = None
               ImagePullPolicy = Always
@@ -59,7 +60,8 @@ module Container =
               Ports = None
               Args = None 
               Request = None 
-              Limits = None }
+              Limits = None
+              SecurityContext = None }
 
         member this.Run(state: ContainerState) =
             let name =
@@ -122,7 +124,7 @@ module Container =
             )
 
         [<CustomOperation("name")>]
-        member this.Name(state: ContainerState, name: string) =
+        member _.Name(state: ContainerState, name: string) =
             { state with
                   Name =
                       name
@@ -133,7 +135,7 @@ module Container =
         member this.Image(state: ContainerState, image: Image) = { state with Image = Some(image) }
 
         [<CustomOperation("args")>]
-        member this.AddArgs(state: ContainerState, arg: Arg) =
+        member _.AddArgs(state: ContainerState, arg: Arg) =
             match state.Args with
             | Some (arguments) ->
                 { state with
@@ -141,7 +143,7 @@ module Container =
             | None -> { state with Args = Some([ arg ]) }
 
         [<CustomOperation("command")>]
-        member this.AddCommand(state: ContainerState, cmd: string list) =
+        member _.AddCommand(state: ContainerState, cmd: string list) =
             let cmds = cmd |> List.map (fun c -> c |> Command)
             match state.Command with
             | Some (command) ->
@@ -150,25 +152,25 @@ module Container =
             | None -> { state with Command = Some(cmds) }
 
         [<CustomOperation("ports")>]
-        member this.AddPorts(state: ContainerState, ports: ContainerPort list) =
+        member _.AddPorts(state: ContainerState, ports: ContainerPort list) =
             match state.Ports with
             | Some (p) -> { state with Ports = Some(p @ ports) }
             | None -> { state with Ports = Some(ports) }
 
         [<CustomOperation("image_pull_policy")>]
-        member this.ImagePullPolicy(state: ContainerState, policy: ImagePullPolicy) =
+        member _.ImagePullPolicy(state: ContainerState, policy: ImagePullPolicy) =
             { state with ImagePullPolicy = policy }
 
         [<CustomOperation("limit")>]
-        member this.Limit(state: ContainerState, limit: Resource) =
+        member _.Limit(state: ContainerState, limit: Resource) =
             { state with Limits = Some(limit) }
 
         [<CustomOperation("request")>]
-        member this.Request(state: ContainerState, req: Resource) =
+        member _.Request(state: ContainerState, req: Resource) =
             { state with Request = Some(req) }
 
         [<CustomOperation("env")>]
-        member this.EnvVar(state: ContainerState, env: EnvironmentVariables) =
+        member _.EnvVar(state: ContainerState, env: EnvironmentVariables) =
             { state with
                   Env = env |> List.map (mapConfig) }
 
