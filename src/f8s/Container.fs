@@ -9,6 +9,28 @@ module Container =
     open k8s
     open k8s.Models
 
+    type Probe =
+        | HttpGet of {| path: string option; port: int; host: string option; headers: Map<string, string> option |}
+
+    type LivenessProbe = { PeriodSeconds: int option; Probe: Probe }
+
+    let private mapHeaders(h: Map<string, string>): V1HTTPHeader seq = 
+        seq {
+            for header in h do
+                yield V1HTTPHeader(header.Key, header.Value)
+        }
+
+    let private mapHeadersOpt(h: Map<string, string> option): ResizeArray<V1HTTPHeader> = 
+        match h with
+        | Some(s) -> mapHeaders(s) |> Enumerable.toList
+        | None -> null
+
+    let mapLivenessProbe(l: LivenessProbe): V1Probe =
+        match l.Probe with
+        | HttpGet(arg) -> 
+            let action = V1HTTPGetAction(arg.port, defaultArg arg.host null, mapHeadersOpt(arg.headers), defaultArg arg.path null)
+            V1Probe(httpGet = action)
+
     type ContainerPort =
         | TCP of int
         | UDP of int
@@ -48,6 +70,7 @@ module Container =
           Env: Choice<V1EnvVar, V1EnvFromSource> list
           Request: Resource option
           Limits: Resource option
+          LivenessProbe: LivenessProbe option
           SecurityContext: V1SecurityContext option }
 
     type ContainerBuilder internal () =
@@ -61,6 +84,7 @@ module Container =
               Args = None 
               Request = None 
               Limits = None
+              LivenessProbe = None
               SecurityContext = None }
 
         member this.Run(state: ContainerState) =
@@ -109,6 +133,7 @@ module Container =
 
             let limit = defaultArg (state.Limits |> Option.map(Resource.convertToK8s)) null
             let request = defaultArg (state.Request |> Option.map(Resource.convertToK8s)) null
+            let livenessProbe = defaultArg (state.LivenessProbe |> Option.map(mapLivenessProbe)) null
             let resources = V1ResourceRequirements(limits = limit, requests = request)
 
             V1Container(
@@ -119,6 +144,7 @@ module Container =
                 command = command,
                 envFrom = envsFrom,
                 args = args,
+                livenessProbe = livenessProbe,
                 ports = defaultArg ports (null),
                 resources = resources
             )
@@ -133,6 +159,9 @@ module Container =
 
         [<CustomOperation("image")>]
         member this.Image(state: ContainerState, image: Image) = { state with Image = Some(image) }
+
+        [<CustomOperation("livenessProbe")>]
+        member this.LivenessProbe(state: ContainerState, image: LivenessProbe) = { state with LivenessProbe = Some(image) }
 
         [<CustomOperation("args")>]
         member _.AddArgs(state: ContainerState, arg: Arg) =
