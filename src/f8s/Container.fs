@@ -71,6 +71,7 @@ module Container =
           Request: Resource option
           Limits: Resource option
           LivenessProbe: LivenessProbe option
+          ReadinessProbe: LivenessProbe option
           SecurityContext: V1SecurityContext option }
 
     type ContainerBuilder internal () =
@@ -85,6 +86,7 @@ module Container =
               Request = None 
               Limits = None
               LivenessProbe = None
+              ReadinessProbe = None
               SecurityContext = None }
 
         member this.Run(state: ContainerState) =
@@ -134,6 +136,7 @@ module Container =
             let limit = defaultArg (state.Limits |> Option.map(Resource.convertToK8s)) null
             let request = defaultArg (state.Request |> Option.map(Resource.convertToK8s)) null
             let livenessProbe = defaultArg (state.LivenessProbe |> Option.map(mapLivenessProbe)) null
+            let readinessProbe = defaultArg (state.ReadinessProbe |> Option.map(mapLivenessProbe)) null
             let resources = V1ResourceRequirements(limits = limit, requests = request)
 
             V1Container(
@@ -145,6 +148,7 @@ module Container =
                 envFrom = envsFrom,
                 args = args,
                 livenessProbe = livenessProbe,
+                readinessProbe = readinessProbe,
                 ports = defaultArg ports (null),
                 resources = resources
             )
@@ -162,6 +166,9 @@ module Container =
 
         [<CustomOperation("livenessProbe")>]
         member this.LivenessProbe(state: ContainerState, image: LivenessProbe) = { state with LivenessProbe = Some(image) }
+
+        [<CustomOperation("readinessProbe")>]
+        member this.ReadinessProbe(state: ContainerState, image: LivenessProbe) = { state with LivenessProbe = Some(image) }
 
         [<CustomOperation("args")>]
         member _.AddArgs(state: ContainerState, arg: Arg) =
