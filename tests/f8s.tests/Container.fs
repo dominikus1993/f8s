@@ -137,3 +137,25 @@ let ``Test container with readinessProbe`` () =
     nginxCont.ReadinessProbe.HttpGet.Port.Value |> should equal "8080"
     nginxCont.ReadinessProbe.HttpGet.HttpHeaders |> should be null
     nginxCont.ReadinessProbe.HttpGet.Path |> should equal "/healthz"
+
+let ``Test container with securityContext`` () =
+    let security = securityContext {
+        capabilities (Add(["NET_ADMIN"; "SYS_TIME"]))
+    }
+    let nginxCont = container {
+        name "nginx"
+        image (Image("nginx", Latest))
+        image_pull_policy (IfNotPresent)
+        command ["nginx"; "-g"; "daemon off;"]
+        env [NameValue("PORT", "8080")]
+        ports [TCP(8080)]
+        request ({ Memory = Mi(512); Cpu = Cpu.M(512) })
+        limit ({ Memory = Gi(1); Cpu = Cpu.M(1024) })
+        readinessProbe ({ PeriodSeconds = Some(1); Probe = HttpGet({| headers = None; host = None; path = Some("/healthz"); port = 8080 |})})
+        securityContext security
+    }   
+
+    nginxCont.SecurityContext.Capabilities.Add |> should haveCount 2
+    nginxCont.SecurityContext.Capabilities.Add |> should contain "NET_ADMIN" 
+    nginxCont.SecurityContext.Capabilities.Add |> should contain "SYS_TIME" 
+    nginxCont.SecurityContext.Capabilities.Drop |> should be Null

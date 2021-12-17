@@ -11,6 +11,7 @@
     <Compile Include="Namespace.fs" />
     <Compile Include="Env.fs" />
     <Compile Include="Image.fs" />
+    <Compile Include="Security.fs" />
     <Compile Include="Container.fs" />
     <Compile Include="Pod.fs" />
     <Compile Include="Deployment.fs" />

@@ -31,6 +31,9 @@ module Container =
             let action = V1HTTPGetAction(arg.port, defaultArg arg.host null, mapHeadersOpt(arg.headers), defaultArg arg.path null)
             V1Probe(httpGet = action)
 
+    let mapSecurityContext a = 
+        V1SecurityContext(capabilities = V1Capabilities())
+
     type ContainerPort =
         | TCP of int
         | UDP of int
@@ -204,6 +207,10 @@ module Container =
         [<CustomOperation("request")>]
         member _.Request(state: ContainerState, req: Resource) =
             { state with Request = Some(req) }
+
+        [<CustomOperation("securityContext")>]
+        member _.SecurityContext(state: ContainerState, sec: V1SecurityContext) =
+            { state with SecurityContext = Some(sec) }
 
         [<CustomOperation("env")>]
         member _.EnvVar(state: ContainerState, env: EnvironmentVariables) =
