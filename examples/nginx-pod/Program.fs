@@ -62,3 +62,13 @@ let nginxService =
 
 let syaml = nginxService |> Serialization.toYaml
 printfn $"Service: \n{syaml}"
+
+
+let secret = secret {
+    metadata meta
+    data (Map[("test", "eEREREREMjEzNw==")])
+}
+
+let secretYaml = secret |> Serialization.toYaml
+
+printfn $"Sample Secret: \n{secretYaml}"

@@ -8,6 +8,7 @@
     <Compile Include="Serialization.fs" />
     <Compile Include="Resource.fs" />
     <Compile Include="MetaData.fs" />
+    <Compile Include="Secret.fs" />
     <Compile Include="Namespace.fs" />
     <Compile Include="Env.fs" />
     <Compile Include="Image.fs" />
