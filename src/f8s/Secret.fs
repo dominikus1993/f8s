@@ -38,6 +38,11 @@ module Secret =
             state.Type <- secret |> KubernetesSecretType.ToKubernetesString
             state
 
+        [<CustomOperation("type")>]
+        member _.Type(state: SecretState, secret: string) =
+            state.Type <- secret
+            state
+
         [<CustomOperation("data")>]
         member _.Data(state: SecretState, data: Map<string, string>) =
             if isNull state.Data then state.Data <- Dictionary<string, byte array>()

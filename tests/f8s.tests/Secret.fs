@@ -68,3 +68,26 @@ let ``Test Opaque string data secret`` () =
     subject.StringData |> should haveCount 1
     subject.StringData["test"] |> should not' (be Null)
     subject.StringData["test"] |> should equal "eEREREREMjEzNw=="
+
+[<Fact>]
+let ``Test string type`` () =
+    let meta = metadata {
+        name "test"
+        nmspc "test"
+        labels [Label("app", "test"); Label("server", "nginx")]
+    }
+
+    let subject = secret {
+        metadata meta
+        ``type`` "Opaque"
+        stringData (Map[("test", "eEREREREMjEzNw==")])
+    }
+
+    subject.ApiVersion |> should equal "v1"
+    subject.Kind |> should equal "Secret"
+    subject.Metadata.Name |> should equal meta.Name
+    subject.Metadata.NamespaceProperty |> should equal meta.NamespaceProperty
+    subject.Type |> should equal "Opaque"
+    subject.StringData |> should haveCount 1
+    subject.StringData["test"] |> should not' (be Null)
+    subject.StringData["test"] |> should equal "eEREREREMjEzNw=="
