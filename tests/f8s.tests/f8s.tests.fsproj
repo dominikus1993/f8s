@@ -12,6 +12,7 @@
     <Compile Include="Namespace.fs" />
     <Compile Include="Image.fs" />
     <Compile Include="Secret.fs" />
+    <Compile Include="Config.fs" />
     <Compile Include="Security.fs" />
     <Compile Include="Container.fs" />
     <Compile Include="Pod.fs" />
