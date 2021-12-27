@@ -2,9 +2,9 @@
 
 open System
 open FSharpNetes
+open k8s
+open k8s.Models
 
-[<EntryPoint>]
-let main argv =
     // let meta =
     //     metadata {
     //         name "devnews-cli"
@@ -38,4 +38,26 @@ let main argv =
 
     // let yaml = cron |> Serialization.toYaml
     // printfn $"{yaml}"
-    0 // return an integer exit code
+
+let meta = metadata {
+    name "devnews-cli"
+    nmspc "bots"
+    labels [Label("app", "devnews-cli");]
+}
+let jobSpec = cronJobSpec {
+    metadata meta
+    concurrencyPolicy Forbid
+    failedJobsHistoryLimit 5
+    successfulJobsHistoryLimit 5 
+    schedule "0 10 * * 1"
+}
+
+
+let devNewsCli = cronjob { 
+    metadata meta
+    spec jobSpec
+}
+
+let yaml = devNewsCli |> Serialization.toYaml
+ 
+printf $"YAML: \n{yaml}"
