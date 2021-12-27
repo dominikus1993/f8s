@@ -26,5 +26,9 @@ module ConfigMap =
             state.Data <- meta
             state
 
+        [<CustomOperation("immutable")>]
+        member _.Immutable (state: V1ConfigMap, immutable: bool) =
+            state.Immutable <- immutable
+            state
     
     let configMap = ConfigMapBuilder()
