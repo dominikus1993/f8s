@@ -1,6 +1,5 @@
 module JobTests
 
-open System
 open Xunit
 open k8s
 open k8s.Models
@@ -16,6 +15,11 @@ let ``Test cron job`` () =
     }
     let nginxSpec = cronJobSpec {
         metadata meta
+        concurrencyPolicy Allow
+        suspend true 
+        failedJobsHistoryLimit 1
+        successfulJobsHistoryLimit 2
+        startingDeadlineSeconds 22
         schedule "* * * * *"
     }
     let nginxJob = cronjob { 
@@ -30,4 +34,9 @@ let ``Test cron job`` () =
     nginxJob.Spec.Schedule |> should equal "* * * * *"
     nginxJob.Spec.JobTemplate.Metadata.Name |> should equal meta.Name
     nginxJob.Spec.JobTemplate.Metadata.NamespaceProperty |> should equal meta.NamespaceProperty
+    nginxJob.Spec.ConcurrencyPolicy |> should equal "Allow"
+    nginxJob.Spec.Suspend |> should be True
+    nginxJob.Spec.FailedJobsHistoryLimit |> should equal 1
+    nginxJob.Spec.SuccessfulJobsHistoryLimit |> should equal 2
+    nginxJob.Spec.StartingDeadlineSeconds |> should equal 22L
 
