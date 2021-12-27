@@ -11,17 +11,6 @@ open k8s.Models
     //         nmspc "bots"
     //     }
 
-    // let devnewsContainer =
-    //     container {
-    //         name "devnews-cli"
-    //         image (Image("dominikus1910/devnewscli", SemVer("v1.3.0")))
-    //         image_pull_policy Always
-    //         env [ NameValue("MicrosoftTeams__Enabled", "false")
-    //               SecretRef("ConnectionStrings__Discord", Secret("devnews", "discord"))
-    //               SecretRef("ConnectionStrings__Articles", Secret("devnews", "articles")) ]
-    //         args (Arg("--article-quantity"))
-    //         args (Arg("10"))
-    //     }
 
     // let devNewsPod = 
     //     podSpec {
@@ -44,6 +33,19 @@ let meta = metadata {
     nmspc "bots"
     labels [Label("app", "devnews-cli");]
 }
+
+let devnewsContainer =
+    container {
+        name "devnews-cli"
+        image (Image("dominikus1910/devnewscli", SemVer("v1.3.0")))
+        image_pull_policy Always
+        env [ NameValue("MicrosoftTeams__Enabled", "false")
+              SecretRef("ConnectionStrings__Discord", ValueFrom("devnews", "discord"))
+              SecretRef("ConnectionStrings__Articles", ValueFrom("devnews", "articles")) ]
+        args (Arg("--article-quantity"))
+        args (Arg("10"))
+    }
+
 let jobSpec = cronJobSpec {
     metadata meta
     concurrencyPolicy Forbid
