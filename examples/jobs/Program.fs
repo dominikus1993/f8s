@@ -46,18 +46,12 @@ let devnewsContainer =
         args (Arg("10"))
     }
 
-let jobSpec = cronJobSpec {
+let devNewsCli = cronjob { 
     metadata meta
     concurrencyPolicy Forbid
     failedJobsHistoryLimit 5
     successfulJobsHistoryLimit 5 
     schedule "0 10 * * 1"
-}
-
-
-let devNewsCli = cronjob { 
-    metadata meta
-    spec jobSpec
 }
 
 let yaml = devNewsCli |> Serialization.toYaml
