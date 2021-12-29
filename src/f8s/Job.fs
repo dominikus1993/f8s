@@ -3,6 +3,23 @@ namespace FSharpNetes
 open k8s.Models
 
 [<AutoOpen>]
+module JobSpec =
+    type CronJobTemplateBuilder internal () =
+        member this.Yield(_) =
+            V1JobTemplateSpec()
+
+        member this.Run(state: V1CronJob) = state
+
+        [<CustomOperation("metadata")>]
+        member _.Name(state: V1JobTemplateSpec, meta: V1ObjectMeta) =
+            if isNull state.Metadata then
+                state.Metadata <- meta
+            state
+
+    let cronjobTemplate = CronJobTemplateBuilder()
+
+
+[<AutoOpen>]
 module CronJobSpec =
     open System
 
@@ -63,8 +80,10 @@ module CronJobSpec =
 
     let cronJobSpec = CronJobSpecBuilder()
 
+
 [<AutoOpen>]
 module CronJob =
+    open System
 
     type private SelectorState = { MatchLabels: Map<string, string> }
 
@@ -87,5 +106,47 @@ module CronJob =
             if isNull state.Spec then
                 state.Spec <- spec
             state
+
+        [<CustomOperation("concurrencyPolicy")>]
+        member _.ConcurrencyPolicy(state: V1CronJob, policy: ConcurrencyPolicy) =
+            if isNull state.Spec then state.Spec <- V1CronJobSpec()
+            state.Spec.ConcurrencyPolicy <- policy |> ConcurrencyPolicy.ToKubernetesString
+            state
+
+        [<CustomOperation("failedJobsHistoryLimit")>]
+        member _.FailedJobsHistoryLimit(state: V1CronJob, limit: int) =
+            if isNull state.Spec then state.Spec <- V1CronJobSpec()
+            state.Spec.FailedJobsHistoryLimit <- limit
+            state
+
+        [<CustomOperation("startingDeadlineSeconds")>]
+        member _.StartingDeadlineSeconds(state: V1CronJob, seconds: int64) =
+            if isNull state.Spec then state.Spec <- V1CronJobSpec()
+            state.Spec.StartingDeadlineSeconds <- seconds
+            state
+
+        [<CustomOperation("suspend")>]
+        member _.Suspend(state: V1CronJob, suspend: bool) =
+            if isNull state.Spec then state.Spec <- V1CronJobSpec()
+            state.Spec.Suspend <- suspend
+            state
+
+        [<CustomOperation("successfulJobsHistoryLimit")>]
+        member _.SuccessfulJobsHistoryLimit(state: V1CronJob, limit: int) =
+            if isNull state.Spec then state.Spec <- V1CronJobSpec()
+            state.Spec.SuccessfulJobsHistoryLimit <- limit
+            state
+
+        [<CustomOperation("schedule")>]
+        member _.Name(state: V1CronJob, schedule: string) =
+            if isNull state.Spec then state.Spec <- V1CronJobSpec()
+            match schedule
+                  |> Option.ofObj
+                  |> Option.filter (fun x -> x |> String.IsNullOrEmpty |> not)
+                with
+            | Some (sch) ->
+                state.Spec.Schedule <- sch
+                state
+            | None -> state
 
     let cronjob = CronJobBuilder()

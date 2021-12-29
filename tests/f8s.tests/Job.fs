@@ -32,8 +32,36 @@ let ``Test cron job`` () =
     nginxJob.Metadata.Name |> should equal meta.Name
     nginxJob.Metadata.NamespaceProperty |> should equal meta.NamespaceProperty
     nginxJob.Spec.Schedule |> should equal "* * * * *"
-    nginxJob.Spec.JobTemplate.Metadata.Name |> should equal meta.Name
-    nginxJob.Spec.JobTemplate.Metadata.NamespaceProperty |> should equal meta.NamespaceProperty
+    nginxJob.Spec.ConcurrencyPolicy |> should equal "Allow"
+    nginxJob.Spec.Suspend |> should be True
+    nginxJob.Spec.FailedJobsHistoryLimit |> should equal 1
+    nginxJob.Spec.SuccessfulJobsHistoryLimit |> should equal 2
+    nginxJob.Spec.StartingDeadlineSeconds |> should equal 22L
+
+
+
+[<Fact>]
+let ``Test cron job wit spec`` () =
+    let meta = metadata {
+        name "test"
+        nmspc "test"
+        labels [Label("app", "test"); Label("server", "nginx")]
+    }
+    let nginxJob = cronjob { 
+        metadata meta
+        concurrencyPolicy Allow
+        suspend true 
+        failedJobsHistoryLimit 1
+        successfulJobsHistoryLimit 2
+        startingDeadlineSeconds 22
+        schedule "* * * * *"
+    }
+
+    nginxJob.Kind |> should equal "CronJob"
+    nginxJob.ApiVersion |> should equal "batch/v1"
+    nginxJob.Metadata.Name |> should equal meta.Name
+    nginxJob.Metadata.NamespaceProperty |> should equal meta.NamespaceProperty
+    nginxJob.Spec.Schedule |> should equal "* * * * *"
     nginxJob.Spec.ConcurrencyPolicy |> should equal "Allow"
     nginxJob.Spec.Suspend |> should be True
     nginxJob.Spec.FailedJobsHistoryLimit |> should equal 1
