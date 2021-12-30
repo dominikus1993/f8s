@@ -193,4 +193,42 @@ module CronJob =
                 state
             | None -> state
 
+        [<CustomOperation("activeDeadlineSeconds")>]
+        member _.ActiveDeadlineSeconds(state: V1CronJob, sec: int64) =
+            if isNull state.Spec then state.Spec <- V1CronJobSpec()
+            if isNull state.Spec.JobTemplate then state.Spec.JobTemplate <- V1JobTemplateSpec()
+            if isNull state.Spec.JobTemplate.Spec then state.Spec.JobTemplate.Spec <- V1JobSpec()
+
+            if not state.Spec.JobTemplate.Spec.ActiveDeadlineSeconds.HasValue then
+                state.Spec.JobTemplate.Spec.ActiveDeadlineSeconds <- sec
+            state
+
+        [<CustomOperation("parallelism")>]
+        member _.Parallelism(state: V1CronJob, p: int) =
+            if isNull state.Spec then state.Spec <- V1CronJobSpec()
+            if isNull state.Spec.JobTemplate then state.Spec.JobTemplate <- V1JobTemplateSpec()
+            if isNull state.Spec.JobTemplate.Spec then state.Spec.JobTemplate.Spec <- V1JobSpec()
+            if not state.Spec.JobTemplate.Spec.Parallelism.HasValue then
+                state.Spec.JobTemplate.Spec.Parallelism <- p
+            state
+
+        [<CustomOperation("backoffLimit")>]
+        member _.BackoffLimit(state: V1CronJob, p: int) =
+            if isNull state.Spec then state.Spec <- V1CronJobSpec()
+            if isNull state.Spec.JobTemplate then state.Spec.JobTemplate <- V1JobTemplateSpec()
+            if isNull state.Spec.JobTemplate.Spec then state.Spec.JobTemplate.Spec <- V1JobSpec()
+            if not state.Spec.JobTemplate.Spec.BackoffLimit.HasValue then
+                state.Spec.JobTemplate.Spec.BackoffLimit <- p
+            state
+
+        [<CustomOperation("pod")>]
+        member _.Pod(state: V1CronJob, pod: V1PodSpec) =
+            if isNull state.Spec then state.Spec <- V1CronJobSpec()
+            if isNull state.Spec.JobTemplate then state.Spec.JobTemplate <- V1JobTemplateSpec()
+            if isNull state.Spec.JobTemplate.Spec then state.Spec.JobTemplate.Spec <- V1JobSpec()
+            if isNull state.Spec.JobTemplate.Spec then state.Spec.JobTemplate.Spec <- V1JobSpec()
+            if isNull state.Spec.JobTemplate.Spec.Template then state.Spec.JobTemplate.Spec.Template <- V1PodTemplateSpec()
+            state.Spec.JobTemplate.Spec.Template <- V1PodTemplateSpec(spec = pod)
+            state      
+
     let cronjob = CronJobBuilder()

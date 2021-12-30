@@ -37,7 +37,7 @@ let meta = metadata {
 let devnewsContainer =
     container {
         name "devnews-cli"
-        image (Image("dominikus1910/devnewscli", SemVer("v1.3.0")))
+        image (Image("dominikus1910/devnewscli", SemVer("1.3.0")))
         image_pull_policy Always
         env [ NameValue("MicrosoftTeams__Enabled", "false")
               SecretRef("ConnectionStrings__Discord", ValueFrom("devnews", "discord"))
@@ -46,12 +46,17 @@ let devnewsContainer =
         args (Arg("10"))
     }
 
+let podevnewsPod = podSpec {
+    container devnewsContainer
+}
+
 let devNewsCli = cronjob { 
     metadata meta
     concurrencyPolicy Forbid
     failedJobsHistoryLimit 5
     successfulJobsHistoryLimit 5 
     schedule "0 10 * * 1"
+    pod podevnewsPod
 }
 
 let yaml = devNewsCli |> Serialization.toYaml
