@@ -4,6 +4,28 @@ open k8s.Models
 
 [<AutoOpen>]
 module JobSpec =
+    type V1JobSpecBuilder internal () =
+        member this.Yield(_) =
+            V1JobSpec()
+
+        member this.Run(state: V1JobSpec) = state
+
+        [<CustomOperation("activeDeadlineSeconds")>]
+        member _.ActiveDeadlineSeconds(state: V1JobSpec, sec: int64) =
+            if not state.ActiveDeadlineSeconds.HasValue then
+                state.ActiveDeadlineSeconds <- sec
+            state
+
+        [<CustomOperation("parallelism")>]
+        member _.Parallelism(state: V1JobSpec, p: int) =
+            if not state.Parallelism.HasValue then
+                state.Parallelism <- p
+            state
+
+    let jobSpec = V1JobSpecBuilder()
+
+[<AutoOpen>]
+module CronJobTemplate =
     type CronJobTemplateBuilder internal () =
         member this.Yield(_) =
             V1JobTemplateSpec()
@@ -16,6 +38,11 @@ module JobSpec =
                 state.Metadata <- meta
             state
 
+        [<CustomOperation("spec")>]
+        member _.Spec(state: V1JobTemplateSpec, spec: V1JobSpec) =
+            if isNull state.Metadata then
+                state.Spec <- spec
+            state
     let cronjobTemplate = CronJobTemplateBuilder()
 
 

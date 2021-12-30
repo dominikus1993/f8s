@@ -6,6 +6,19 @@ open k8s.Models
 open FsUnit.Xunit
 open FSharpNetes
 
+
+[<Fact>]
+let ``Test jobSpec`` () =
+    let subject = jobSpec {
+        activeDeadlineSeconds 1
+        parallelism 21
+    }
+
+    subject.ActiveDeadlineSeconds |> should equal 1L
+    subject.Parallelism |> should equal 21
+
+
+
 [<Fact>]
 let ``Test cron job`` () =
     let meta = metadata {
