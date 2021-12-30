@@ -16,11 +16,28 @@ module JobSpec =
                 state.ActiveDeadlineSeconds <- sec
             state
 
+        [<CustomOperation("suspend")>]
+        member _.Suspend(state: V1JobSpec, suspend: bool) =
+            state.Suspend <- suspend
+            state
+
         [<CustomOperation("parallelism")>]
         member _.Parallelism(state: V1JobSpec, p: int) =
             if not state.Parallelism.HasValue then
                 state.Parallelism <- p
             state
+
+        [<CustomOperation("backoffLimit")>]
+        member _.BackoffLimit(state: V1JobSpec, p: int) =
+            if not state.BackoffLimit.HasValue then
+                state.BackoffLimit <- p
+            state
+
+        [<CustomOperation("pod")>]
+        member _.Pod(state: V1JobSpec, pod: V1PodSpec) =
+            if isNull state.Template || isNull state.Template.Spec then
+                state.Template <- V1PodTemplateSpec(spec = pod)
+            state           
 
     let jobSpec = V1JobSpecBuilder()
 
@@ -30,7 +47,7 @@ module CronJobTemplate =
         member this.Yield(_) =
             V1JobTemplateSpec()
 
-        member this.Run(state: V1CronJob) = state
+        member this.Run(state: V1JobTemplateSpec) = state
 
         [<CustomOperation("metadata")>]
         member _.Name(state: V1JobTemplateSpec, meta: V1ObjectMeta) =
@@ -40,7 +57,7 @@ module CronJobTemplate =
 
         [<CustomOperation("spec")>]
         member _.Spec(state: V1JobTemplateSpec, spec: V1JobSpec) =
-            if isNull state.Metadata then
+            if isNull state.Spec then
                 state.Spec <- spec
             state
     let cronjobTemplate = CronJobTemplateBuilder()
