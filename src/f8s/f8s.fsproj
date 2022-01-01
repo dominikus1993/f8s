@@ -18,6 +18,7 @@
     <Compile Include="Pod.fs" />
     <Compile Include="Deployment.fs" />
     <Compile Include="Service.fs" />
+    <Compile Include="Ingress.fs" />
     <Compile Include="Job.fs" />
   </ItemGroup>
    <ItemGroup>

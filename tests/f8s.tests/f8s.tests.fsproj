@@ -20,6 +20,7 @@
     <Compile Include="Service.fs" />
     <Compile Include="Utils.fs" />
     <Compile Include="Job.fs" />
+    <Compile Include="Ingress.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
