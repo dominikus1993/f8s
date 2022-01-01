@@ -3,7 +3,22 @@ open k8s.Models
 open k8s
 
 [<AutoOpen>]
-module Ingresss =
+module IngressSpec =
+    type IngressSpecBuilder internal () =
+        member this.Yield(_) =
+            V1IngressSpec()
+        
+        member this.Run(state: V1IngressSpec) = state
+
+        [<CustomOperation("ingressClassName")>]
+        member this.Metadata (state: V1IngressSpec, ingressClassName: string) =
+            state.IngressClassName <- ingressClassName
+            state
+    
+    let ingressSpec = IngressSpecBuilder()
+
+[<AutoOpen>]
+module Ingress =
     type IngressBuilder internal () =
         member this.Yield(_) =
             V1Ingress(apiVersion = "networking.k8s.io/v1", kind = "Ingress")
