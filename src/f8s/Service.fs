@@ -2,12 +2,37 @@ namespace FSharpNetes
 open k8s.Models
 open k8s
 
+module ServiceSpec = 
+    type ServiceSpecBuilder internal() =
+        member this.Yield(_) =
+            V1ServiceSpec()
+
+        member this.Run(state: V1ServiceSpec) = state   
+
+        [<CustomOperation("port")>]
+        member this.Port (state: V1ServiceSpec, port: ServicePort) =
+            this.Ports(state, [port])
+
+        [<CustomOperation("ports")>]
+        member this.Ports (state: V1ServiceSpec, ports: ServicePort list) =
+            match state.Ports with
+            | Some(cont) ->
+                { state with Ports = Some(cont @ ports)}
+            | None ->
+                { state with Ports = Some(ports)}
+
+
 [<AutoOpen>]
 module Service =
     type ServiceType =
         | NodePort
         | ClusterIp
-        | LoadBalancer
+        | LoadBalancer with
+            static member ToKubernetesString(policy: ServiceType) =
+                match policy with
+                | NodePort -> "NodePort"
+                | ClusterIp -> "ClusterIP"
+                | LoadBalancer -> "LoadBalancer"
 
     type ServicePort =
         | TCP of name: string * port: int * targetPort: int
@@ -24,22 +49,31 @@ module Service =
 
     let private mapSelectors (selector: ServiceSelector list) =
         selector |> List.fold(fun acc s -> mapSelector s acc) Map.empty
-
-    type ServiceState = { MetaData: V1ObjectMeta option; Ports: ServicePort list option; Selector: ServiceSelector list option  }
-
     type ServiceBuilder internal () =
         member this.Yield(_) =
-            { MetaData = None; Ports = None; Selector = None }
-        
-        member this.Run(state: ServiceState) = 
-            let meta = defaultArg state.MetaData (V1ObjectMeta())
-            let ports = defaultArg state.Ports [] |> List.map(mapPort) |> Utils.toList
-            let selectors = defaultArg state.Selector [] |> mapSelectors 
-            V1Service(metadata = meta, spec = V1ServiceSpec(ports = ports, selector = selectors), kind = "Service", apiVersion = "v1")
+            V1Service(kind = "Service", apiVersion = "v1")
+
+        [<CustomOperation("apiVersion")>]
+        member this.ApiVersion (state: V1Service, apiVersion: string) =
+            state.ApiVersion <- apiVersion
+            state
+
+        member this.Run(state: V1Service) = state
+            // let meta = defaultArg state.MetaData (V1ObjectMeta())
+            // let ports = defaultArg state.Ports [] |> List.map(mapPort) |> Utils.toList
+            // let selectors = defaultArg state.Selector [] |> mapSelectors 
+            // let t = defaultArg (state.ServiceType |> Option.map(ServiceType.ToKubernetesString)) null
+            // V1Service(metadata = meta, spec = V1ServiceSpec(ports = ports, selector = selectors, ``type``= t), kind = "Service", apiVersion = "v1")
 
         [<CustomOperation("metadata")>]
-        member this.Name (state: ServiceState, meta: V1ObjectMeta) =
-            { state with MetaData = Some(meta) }
+        member this.Metadata (state: V1Service, meta: V1ObjectMeta) =
+            state.Metadata <- meta
+            state
+
+        [<CustomOperation("spec")>]
+        member this.Spec (state: V1Service, meta: V1ServiceSpec) =
+            state.Spec <- meta
+            state
 
         [<CustomOperation("port")>]
         member this.Port (state: ServiceState, port: ServicePort) =
@@ -53,6 +87,10 @@ module Service =
             | None ->
                 { state with Ports = Some(ports)}
 
+        [<CustomOperation("type")>]
+        member _.Type (state: ServiceState, t: ServiceType) =
+            { state with ServiceType = Some(t)}
+
         [<CustomOperation("selector")>]
         member this.Selector (state: ServiceState, selector: ServiceSelector) =
             this.Selectors(state, [selector])
@@ -64,6 +102,6 @@ module Service =
                 { state with Selector = Some(cont @ selectors)}
             | None ->
                 { state with Selector = Some(selectors)}
-    
+
     let service = ServiceBuilder()
             
