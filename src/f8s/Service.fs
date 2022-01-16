@@ -2,24 +2,44 @@ namespace FSharpNetes
 open k8s.Models
 open k8s
 
-module ServiceSpec = 
+module ServiceSpec =
+    open System.Collections.Generic
+
+    type ServiceSelector = ServiceSelector of name: string * value: string
+
+    let private mapSelector (selector: ServiceSelector) (map) : Map<string, string> =
+        let (ServiceSelector(name, value)) = selector
+        Map.add name value map
+          
+    let private mapSelectors (selector: ServiceSelector list) =
+        selector |> List.fold(fun acc s -> mapSelector s acc) Map.empty
     type ServiceSpecBuilder internal() =
         member this.Yield(_) =
             V1ServiceSpec()
 
         member this.Run(state: V1ServiceSpec) = state   
 
-        [<CustomOperation("port")>]
-        member this.Port (state: V1ServiceSpec, port: ServicePort) =
-            this.Ports(state, [port])
+        [<CustomOperation("clusterIP")>]
+        member this.Port (state: V1ServiceSpec, ip: string) =
+            state.ClusterIP <- ip
+            state
 
-        [<CustomOperation("ports")>]
-        member this.Ports (state: V1ServiceSpec, ports: ServicePort list) =
-            match state.Ports with
-            | Some(cont) ->
-                { state with Ports = Some(cont @ ports)}
-            | None ->
-                { state with Ports = Some(ports)}
+        [<CustomOperation("clusterIP")>]
+        member this.Port (state: V1ServiceSpec, ip: string) =
+            state.ClusterIP <- ip
+            state          
+
+        [<CustomOperation("selector")>]
+        member this.Selector (state: V1ServiceSpec, selector: ServiceSelector) =
+            this.Selectors(state, [selector])
+
+        [<CustomOperation("selectors")>]
+        member this.Selectors (state: V1ServiceSpec, selectors: ServiceSelector list) =
+            if isNull state.Selector then state.Selector <- Dictionary()
+            let s = selectors |> mapSelectors
+            for selector in s do 
+                state.Selector.Add(selector)
+            state
 
 
 [<AutoOpen>]

@@ -4,6 +4,9 @@ open k8s
 
 [<AutoOpen>]
 module IngressSpec =
+    type IngressService = { Name: string; Port: int }
+
+    type Path = { Path: string; PathType: string; Backend: IngressService}
     type IngressSpecBuilder internal () =
         member this.Yield(_) =
             V1IngressSpec()
@@ -13,7 +16,6 @@ module IngressSpec =
         [<CustomOperation("ingressClassName")>]
         member this.Metadata (state: V1IngressSpec, ingressClassName: string) =
             state.IngressClassName <- ingressClassName
-            state
     
     let ingressSpec = IngressSpecBuilder()
 
