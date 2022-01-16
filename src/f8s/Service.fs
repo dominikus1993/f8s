@@ -2,6 +2,7 @@ namespace FSharpNetes
 open k8s.Models
 open k8s
 
+[<AutoOpen>]
 module ServiceSpec =
     open System.Collections.Generic
 
@@ -13,6 +14,7 @@ module ServiceSpec =
           
     let private mapSelectors (selector: ServiceSelector list) =
         selector |> List.fold(fun acc s -> mapSelector s acc) Map.empty
+
     type ServiceSpecBuilder internal() =
         member this.Yield(_) =
             V1ServiceSpec()
@@ -20,12 +22,7 @@ module ServiceSpec =
         member this.Run(state: V1ServiceSpec) = state   
 
         [<CustomOperation("clusterIP")>]
-        member this.Port (state: V1ServiceSpec, ip: string) =
-            state.ClusterIP <- ip
-            state
-
-        [<CustomOperation("clusterIP")>]
-        member this.Port (state: V1ServiceSpec, ip: string) =
+        member this.ClusterIp (state: V1ServiceSpec, ip: string) =
             state.ClusterIP <- ip
             state          
 
@@ -41,6 +38,7 @@ module ServiceSpec =
                 state.Selector.Add(selector)
             state
 
+    let serviceSpec = ServiceSpecBuilder()
 
 [<AutoOpen>]
 module Service =
@@ -60,15 +58,7 @@ module Service =
     let private mapPort (port: ServicePort) =
         match port with 
         | TCP(name, port, targetPort) -> V1ServicePort(port, name = name, targetPort = targetPort, protocol = "TCP")
-
-    type ServiceSelector = ServiceSelector of name: string * value: string
-
-    let private mapSelector (selector: ServiceSelector) (map) : Map<string, string> =
-        let (ServiceSelector(name, value)) = selector
-        Map.add name value map
-
-    let private mapSelectors (selector: ServiceSelector list) =
-        selector |> List.fold(fun acc s -> mapSelector s acc) Map.empty
+        
     type ServiceBuilder internal () =
         member this.Yield(_) =
             V1Service(kind = "Service", apiVersion = "v1")
@@ -94,34 +84,6 @@ module Service =
         member this.Spec (state: V1Service, meta: V1ServiceSpec) =
             state.Spec <- meta
             state
-
-        [<CustomOperation("port")>]
-        member this.Port (state: ServiceState, port: ServicePort) =
-            this.Ports(state, [port])
-
-        [<CustomOperation("ports")>]
-        member this.Ports (state: ServiceState, ports: ServicePort list) =
-            match state.Ports with
-            | Some(cont) ->
-                { state with Ports = Some(cont @ ports)}
-            | None ->
-                { state with Ports = Some(ports)}
-
-        [<CustomOperation("type")>]
-        member _.Type (state: ServiceState, t: ServiceType) =
-            { state with ServiceType = Some(t)}
-
-        [<CustomOperation("selector")>]
-        member this.Selector (state: ServiceState, selector: ServiceSelector) =
-            this.Selectors(state, [selector])
-
-        [<CustomOperation("selectors")>]
-        member this.Selectors (state: ServiceState, selectors: ServiceSelector list) =
-            match state.Selector with
-            | Some(cont) ->
-                { state with Selector = Some(cont @ selectors)}
-            | None ->
-                { state with Selector = Some(selectors)}
 
     let service = ServiceBuilder()
             
