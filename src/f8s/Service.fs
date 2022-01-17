@@ -6,6 +6,16 @@ open k8s
 module ServiceSpec =
     open System.Collections.Generic
 
+    type ServiceType =
+    | NodePort
+    | ClusterIp
+    | LoadBalancer with
+        static member ToKubernetesString(policy: ServiceType) =
+            match policy with
+            | NodePort -> "NodePort"
+            | ClusterIp -> "ClusterIP"
+            | LoadBalancer -> "LoadBalancer"
+
     type ServiceSelector = ServiceSelector of name: string * value: string
 
     let private mapSelector (selector: ServiceSelector) (map) : Map<string, string> =
@@ -26,6 +36,11 @@ module ServiceSpec =
             state.ClusterIP <- ip
             state          
 
+        [<CustomOperation("type")>]
+        member this.Type (state: V1ServiceSpec, t: ServiceType) =
+            state.Type <- (t |> ServiceType.ToKubernetesString)
+            state    
+
         [<CustomOperation("selector")>]
         member this.Selector (state: V1ServiceSpec, selector: ServiceSelector) =
             this.Selectors(state, [selector])
@@ -42,23 +57,7 @@ module ServiceSpec =
 
 [<AutoOpen>]
 module Service =
-    type ServiceType =
-        | NodePort
-        | ClusterIp
-        | LoadBalancer with
-            static member ToKubernetesString(policy: ServiceType) =
-                match policy with
-                | NodePort -> "NodePort"
-                | ClusterIp -> "ClusterIP"
-                | LoadBalancer -> "LoadBalancer"
-
-    type ServicePort =
-        | TCP of name: string * port: int * targetPort: int
-
-    let private mapPort (port: ServicePort) =
-        match port with 
-        | TCP(name, port, targetPort) -> V1ServicePort(port, name = name, targetPort = targetPort, protocol = "TCP")
-        
+      
     type ServiceBuilder internal () =
         member this.Yield(_) =
             V1Service(kind = "Service", apiVersion = "v1")
