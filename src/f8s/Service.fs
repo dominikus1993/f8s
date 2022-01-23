@@ -110,11 +110,6 @@ module Service =
             state
 
         member this.Run(state: V1Service) = state
-            // let meta = defaultArg state.MetaData (V1ObjectMeta())
-            // let ports = defaultArg state.Ports [] |> List.map(mapPort) |> Utils.toList
-            // let selectors = defaultArg state.Selector [] |> mapSelectors 
-            // let t = defaultArg (state.ServiceType |> Option.map(ServiceType.ToKubernetesString)) null
-            // V1Service(metadata = meta, spec = V1ServiceSpec(ports = ports, selector = selectors, ``type``= t), kind = "Service", apiVersion = "v1")
 
         [<CustomOperation("metadata")>]
         member this.Metadata (state: V1Service, meta: V1ObjectMeta) =
