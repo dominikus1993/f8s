@@ -3,6 +3,42 @@ open k8s.Models
 open k8s
 
 [<AutoOpen>]
+module ServicePortSpec =
+
+    type ServicePortBuilder internal() =
+        member this.Yield(_) =
+            V1ServicePort()
+
+        member this.Run(state: V1ServicePort) = state
+
+        [<CustomOperation("name")>]
+        member _.Name(state: V1ServicePort, name: string) = 
+            state.Name <- name
+            state
+
+        [<CustomOperation("porotocol")>]
+        member _.Protocol(state: V1ServicePort, porotocol: string) = 
+            state.AppProtocol <- porotocol
+            state
+
+        [<CustomOperation("nodePort")>]
+        member _.Protocol(state: V1ServicePort, port: int) = 
+            state.NodePort <- port
+            state
+
+        [<CustomOperation("port")>]
+        member _.Port(state: V1ServicePort, port: int) = 
+            state.Port <- port
+            state
+
+        [<CustomOperation("targetPort")>]
+        member _.TargetPort(state: V1ServicePort, port: int) = 
+            state.TargetPort <- port
+            state      
+            
+    let servicePort = ServicePortBuilder()
+
+[<AutoOpen>]
 module ServiceSpec =
     open System.Collections.Generic
 
@@ -52,6 +88,12 @@ module ServiceSpec =
             for selector in s do 
                 state.Selector.Add(selector)
             state
+        
+        [<CustomOperation("port")>]
+        member _.Port(state: V1ServiceSpec, port: V1ServicePort) =
+            if isNull state.Ports then  state.Ports <- ResizeArray()
+            state.Ports.Add(port)
+            state 
 
     let serviceSpec = ServiceSpecBuilder()
 
