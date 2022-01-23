@@ -53,6 +53,24 @@ let nginxDeployemt =
 let yaml = nginxDeployemt |> Serialization.toYaml
 printfn $"Deployment: \n{yaml}"
 
+let nginxService =
+    service {
+        metadata meta
+        spec (serviceSpec {
+            selector (ServiceSelector("app", "test"))
+            ``type`` NodePort
+            port (servicePort {
+                name "test"
+                porotocol "TCP"
+                port 80
+                targetPort 80
+            })
+        })
+    }
+
+let syaml = nginxService |> Serialization.toYaml
+printfn $"Service: \n{syaml}"
+
 
 let secret = secret {
     metadata meta
