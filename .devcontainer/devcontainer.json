@@ -14,6 +14,7 @@
 	"settings": {
 		"omnisharp.path": "latest",
 		"omnisharp.useModernDotnet": true,
+		"omnisharp.useGlobalMono": "never",
 	},
 
 	// Add the IDs of extensions you want installed when the container is created.
