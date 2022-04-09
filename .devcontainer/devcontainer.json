@@ -6,15 +6,17 @@
 		"dockerfile": "Dockerfile",
 		"args": {
 			// Options
-			"NODE_VERSION": "16"
+			"NODE_VERSION": "16",
+			"VARIANT": "6.0-bullseye"
 		}
 	},
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
-		"omnisharp.path": "latest",
-		"omnisharp.useModerNet": true,
+		"omnisharp.useModernNet": true,
 		"omnisharp.useGlobalMono": "never",
+        "csharp.semanticHighlighting.enabled": true,
+		"editor.semanticHighlighting.enabled": true
 	},
 
 	// Add the IDs of extensions you want installed when the container is created.
